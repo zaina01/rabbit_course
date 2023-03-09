@@ -1,0 +1,18 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: rabbit_course
+  datasource:
+    druid:
+      driver-class-name: com.mysql.jdbc.cj.Driver
+      url: jdbc:mysql://localhost:3306/rabbit_course?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncode=utf-8
+      username: root
+      password: root
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: assign_id
