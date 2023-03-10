@@ -1,7 +1,6 @@
 package com.xiaming.rabbit_course.controller;
 
 
-
 import com.xiaming.rabbit_course.common.Result;
 import com.xiaming.rabbit_course.entity.User;
 import com.xiaming.rabbit_course.service.UserService;
@@ -9,6 +8,8 @@ import com.xiaming.rabbit_course.utils.ConcealDataUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,45 +26,55 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/user")
 @Validated
 public class UserController {
-
+    @Resource
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Resource
     private UserService userService;
 
+    @PostMapping("/login")
+    public Result<Map<String,String>> login(@RequestBody User user){
+        //登录
+        return userService.login(user);
+    }
 
-    @PostMapping
+    @PostMapping("/signIn")
     public Result<String> signIn(@Validated @RequestBody User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         log.info("user:{}", user);
-        userService.save(user);
-        return Result.ok("注册成功");
+        if (userService.save(user)) {
+            return Result.ok("注册成功");
+        }
+        return Result.error("注册失败");
     }
 
     @GetMapping
     public Result<User> findById(@NotNull(message = "id不能为空") Long id) {
         log.info("id:{}", id);
+        log.info("用户{}调用了查询接口", SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         User user = userService.getById(id);
         if (user != null) {
             user.setPassword("");
             user.setPhone(ConcealDataUtils.concealPhone(user.getPhone()));
             return Result.ok("查询成功", user);
         }
-        return Result.error(10001, "查询失败");
+        return Result.error("查询失败");
     }
 
     @PutMapping
     public Result<String> updateById(@Validated @RequestBody User user) {
         log.info("user:{}", user);
-        if (user.getId()!=null){
-            if (userService.updateById(user)){
+        if (user.getId() != null) {
+            if (userService.updateById(user)) {
                 return Result.ok("修改成功");
             }
         }
-        return Result.error(10001,"修改成功");
+        return Result.error("修改成功");
     }
 
     @DeleteMapping
     public Result<String> delete(@NotNull(message = "id不能为空") Long id) {
         if (!userService.removeById(id)) {
-            return Result.error(10001,"删除成功");
+            return Result.error("删除成功");
         }
         return Result.ok("删除成功");
     }

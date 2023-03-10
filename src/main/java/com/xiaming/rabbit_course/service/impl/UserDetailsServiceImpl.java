@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,9 +24,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getPhone,s);
         User user = userService.getOne(queryWrapper);
+        if (Objects.isNull(user)){
+            throw new RuntimeException("用户名或密码错误");
+        }
         List<SimpleGrantedAuthority> authorities=new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new org.springframework.security.core.userdetails.User(s,user.getPassword(),user.getStatus()==1,true,true,true,authorities);
+        return new org.springframework.security.core.userdetails.User(s,user.getPassword(),user.getStatus()==0,true,true,true,authorities);
     }
 }

@@ -24,9 +24,9 @@ public class Result<T> implements Serializable {
         r.msg=msg;
         return r;
     }
-    public static <T> Result<T>error(Integer code,String msg){
+    public static <T> Result<T>error(String msg){
         Result<T> r = new Result<>();
-        r.code=code;
+        r.code=0;
         r.msg=msg;
         return r;
     }

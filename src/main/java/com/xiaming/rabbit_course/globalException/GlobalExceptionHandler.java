@@ -20,23 +20,23 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public Result<String> exceptionHandler(AccessDeniedException ex){
         log.info(ex.getMessage());
-        return Result.error(10101,"权限不足");
+        return Result.error("权限不足");
     }
 
     @ExceptionHandler(CustomException.class)
     public Result<String> exceptionHandler(CustomException ex){
         log.info(ex.getMessage());
-        return Result.error(10201,ex.getMessage());
+        return Result.error(ex.getMessage());
     }
     @ExceptionHandler(ValidationException.class)
     public Result<String> exceptionHandler(ValidationException ex){
         log.info(ex.getMessage());
-        return Result.error(10301,ex.getMessage());
+        return Result.error(ex.getMessage());
     }
 
     @ExceptionHandler(BindException.class)
     public Result<String> exceptionHandler(BindException ex){
         log.info(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-        return Result.error(10301,ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return Result.error(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
     }
 }
