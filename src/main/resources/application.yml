@@ -8,7 +8,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/rabbit_course?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncode=utf-8
       username: root
-      password: root
+      password: hnkhbnbbdkjn
   redis:
     host: localhost
     port: 6379
@@ -21,3 +21,7 @@ mybatis-plus:
     db-config:
       id-type: assign_id
 
+rabbit:
+  avatar:
+    windowsPath: D:\avatar\
+    linuxPath:  /usr/avatar/

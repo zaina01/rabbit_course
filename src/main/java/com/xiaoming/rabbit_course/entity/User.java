@@ -18,17 +18,18 @@ public class User implements Serializable {
     private Long id;
 
     //    昵称
-    @ApiModelProperty("用户昵称")
-    @NotBlank(message = "昵称不能为空")
-    private String name;
+    @ApiModelProperty("用户邮箱")
+    @NotBlank(message = "邮箱不能为空")
+    private String email;
 
     //    手机号
-    @ApiModelProperty("用户手机号")
-    @NotBlank(message = "手机号不能为空")
-    private String phone;
+    @ApiModelProperty("用户账号")
+    @NotBlank(message = "账号不能为空")
+    private String username;
     @ApiModelProperty("用户密码")
     @NotBlank(message = "密码不能为空")
     @Length(min = 5,max = 20,message = "密码长度应该在6-20之间")
+    @TableField(select = false)
     private String password;
 
     //    性别 1:男性, 2: 女性
@@ -39,6 +40,8 @@ public class User implements Serializable {
 
     //    状态 0:禁用，1:正常
     private Integer status;
+//    角色
+    private String role;
 
     //    创建时间
     @TableField(fill = FieldFill.INSERT)

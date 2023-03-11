@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public Result<String> exceptionHandler(AccessDeniedException ex){
         log.info(ex.getMessage());
-        return Result.error("权限不足");
+        return Result.error("无访问权限");
     }
 
     @ExceptionHandler(CustomException.class)
@@ -38,5 +38,11 @@ public class GlobalExceptionHandler {
     public Result<String> exceptionHandler(BindException ex){
         log.info(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return Result.error(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public Result<String> exceptionHandler(RuntimeException ex){
+        log.info(ex.getMessage());
+        return Result.error(ex.getMessage());
     }
 }
