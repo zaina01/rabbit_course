@@ -29,12 +29,12 @@ public class CourseController {
         return Result.error("添加课程失败");
     }
     @Secured("ROLE_ADMIN")
-    @ApiOperation("删除课程")
+    @ApiOperation("删除课程  需要ROLE_ADMIN权限")
     @DeleteMapping("/{id}")
     public Result<String> delete(@ApiParam(value ="课程id",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
         return courseService.delete(id);
     }
-    @ApiOperation("修改课程信息")
+    @ApiOperation("修改课程信息 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PutMapping
     public Result<String> update(@ApiParam(value ="要修改的课程信息") @RequestBody Course course){

@@ -28,6 +28,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
         Course course = getById(id);
         LambdaQueryWrapper<Episode> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Episode::getCourseId,id);
+        queryWrapper.orderByDesc(Episode::getSort).orderByDesc(Episode::getCreateTime);
         List<Episode> episodes = episodeService.list(queryWrapper);
         CourseDto courseDto = new CourseDto();
         BeanUtils.copyProperties(course,courseDto);
