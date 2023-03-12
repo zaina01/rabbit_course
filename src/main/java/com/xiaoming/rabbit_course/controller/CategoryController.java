@@ -19,7 +19,7 @@ public class CategoryController {
     @Resource
     private CategoryService categoryService;
 
-    @ApiOperation("新增分类")
+    @ApiOperation("新增分类 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PostMapping
     public Result<String> save(@ApiParam("分类信息") @RequestBody Category category){
@@ -29,11 +29,13 @@ public class CategoryController {
         return Result.error("添加分类失败");
     }
     @Secured("ROLE_ADMIN")
-    @ApiOperation("删除分类")
+    @ApiOperation("删除分类 需要ROLE_ADMIN权限")
     @DeleteMapping
     public Result<String> delete(@ApiParam("分类id") @NotNull(message = "id不能为空") Long id){
         return categoryService.delete(id);
     }
+    @Secured("ROLE_ADMIN")
+    @ApiOperation("更新分类 需要ROLE_ADMIN权限")
     @PutMapping
     public Result<String> update(@ApiParam("要修改的分类信息") @RequestBody Category category){
         if (categoryService.updateById(category)){

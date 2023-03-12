@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ValidationException;
 
@@ -45,5 +46,12 @@ public class GlobalExceptionHandler {
         log.info(ex.getMessage());
         ex.printStackTrace();
         return Result.error(ex.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public Result<String> exceptionHandler(MethodArgumentTypeMismatchException ex){
+        log.info(ex.getMessage());
+//        ex.printStackTrace();
+        return Result.error("参数非法");
     }
 }

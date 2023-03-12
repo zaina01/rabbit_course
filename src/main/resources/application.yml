@@ -22,6 +22,5 @@ mybatis-plus:
       id-type: assign_id
 
 rabbit:
-  avatar:
-    windowsPath: D:\avatar\
-    linuxPath:  /usr/avatar/
+    windowsPath: D:\rabbit\
+    linuxPath:  /usr/rabbit/

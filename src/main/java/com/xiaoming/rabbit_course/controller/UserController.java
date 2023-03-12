@@ -83,8 +83,8 @@ public class UserController {
     }
     @ApiOperation("分页查询用户信息，该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
-    @GetMapping("/{page}/{size}/{username}")
-    public Result<Page> page(@ApiParam("页码") @PathVariable int page,@ApiParam("每页显示数") @PathVariable int size,@ApiParam("查询条件手机号，可传可不传") @PathVariable String username){
+    @GetMapping("/{page}/{size}")
+    public Result<Page> page(@ApiParam("页码") @NotNull(message = "page不能为空") @PathVariable int page,@ApiParam("每页显示数") @NotNull(message = "size不能为空") @PathVariable int size,@ApiParam("查询条件手机号，可传可不传") String username){
         return userService.findAll(page,size,username);
     }
 }

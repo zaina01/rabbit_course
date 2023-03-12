@@ -94,7 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Result<String> serviceUpdateById(User user) {
         if (user.getId() != null) {
-            if (StringUtils.isNotEmpty(user.getPassword())) {
+            if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
             if (updateById(user)) {
@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Page<User> pageInfo = new Page<>(page, size);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.ne(User::getRole,"ROLE_ADMIN");
-        queryWrapper.eq(StringUtils.isNotEmpty(username),User::getUsername,username);
+        queryWrapper.eq(StringUtils.isNotBlank(username),User::getUsername,username);
         Page<User> userPage = page(pageInfo,queryWrapper);
         return Result.ok("查询成功",userPage);
     }

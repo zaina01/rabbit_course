@@ -6,6 +6,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +29,9 @@ import java.util.UUID;
 @RequestMapping("/common")
 @Slf4j
 public class CommonController {
-    @Value("${rabbit.avatar.windowsPath}")
+    @Value("${rabbit.windowsPath}")
     private String windowsPath;
-    @Value("${rabbit.avatar.linuxPath}")
+    @Value("${rabbit.linuxPath}")
     private String linuxPath;
 
     /**
@@ -37,15 +40,19 @@ public class CommonController {
      * @param file
      * @return
      */
-    @ApiOperation("图片上传，上传成功后会返回文件名库")
-    @PostMapping("/avatarUpload")
-    public Result<String> avatarUpload(@ApiParam("要上传的图片") MultipartFile file) {
+    @ApiOperation("上传文件 成功会返回文件名")
+    @PostMapping("/Upload")
+    public Result<String> avatarUpload(@ApiParam("要上传的文件") MultipartFile file) {
+        if(file.isEmpty()){
+            throw new CustomException("上传的文件为空");
+        }
         //原始文件名
         String originalFilename = file.getOriginalFilename();
         //截取文件格式
         String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
+
         //使用UUID重新生成文件名,防止文件名称重复造成文件覆盖
-        String filename = UUID.randomUUID().toString() + substring;
+        String filename = UUID.randomUUID().toString()+substring;
 
         File dir = null;
         String os = System.getProperty("os.name");

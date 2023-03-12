@@ -1,6 +1,7 @@
 package com.xiaoming.rabbit_course.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoming.rabbit_course.common.Result;
 import com.xiaoming.rabbit_course.entity.Course;
 import com.xiaoming.rabbit_course.service.CourseService;
@@ -27,12 +28,12 @@ public class CourseController {
         }
         return Result.error("添加课程失败");
     }
-//    @Secured("ROLE_ADMIN")
-//    @ApiOperation("删除课程")
-//    @DeleteMapping("/delete")
-//    public Result<String> delete(@ApiParam("课程id") @NotNull(message = "id不能为空") Long id){
-//        return courseService.delete(id);
-//    }
+    @Secured("ROLE_ADMIN")
+    @ApiOperation("删除课程")
+    @DeleteMapping("/{id}")
+    public Result<String> delete(@ApiParam("课程id") @NotNull(message = "id不能为空") @PathVariable Long id){
+        return courseService.delete(id);
+    }
     @ApiOperation("修改课程信息")
     @Secured("ROLE_ADMIN")
     @PutMapping
@@ -42,10 +43,15 @@ public class CourseController {
         }
         return Result.error("修改课程失败");
     }
-//    @ApiOperation("/查询课程信息")
-//    @GetMapping("/findById")
-//    public Result<Course> findById(@ApiParam("课程ID") @NotNull(message = "id不能为空") Long id){
-//        return courseService.findById(id);
-//    }
+    @ApiOperation("/查询课程信息")
+    @GetMapping("/{id}")
+    public Result<Course> findById(@ApiParam("课程ID") @NotNull(message = "id不能为空") @PathVariable Long id){
+        return courseService.findById(id);
+    }
+    @ApiOperation("/查询全部课程")
+    @GetMapping("/{page}/{size}")
+    public Result<Page> page(@ApiParam("页码") @NotNull(message = "page不能为空") @PathVariable int page, @ApiParam("每页显示数") @NotNull(message = "size不能为空") @PathVariable int size, @ApiParam("查询条件课程名，可传可不传") String name){
+        return courseService.findAll(page,size,name);
+    }
 
 }
