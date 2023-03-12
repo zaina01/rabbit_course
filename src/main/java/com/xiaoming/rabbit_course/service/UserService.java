@@ -17,7 +17,7 @@ public interface UserService extends IService<User> {
 
     Result<String> serviceUpdateById(User user);
 
-    Result<User> findByPhone(String username);
+    Result<User> findByusername(String username);
 
     Result<User> findById(Long id);
 

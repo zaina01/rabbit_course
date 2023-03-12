@@ -8,7 +8,7 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/rabbit_course?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncode=utf-8
       username: root
-      password: hnkhbnbbdkjn
+      password: root
   redis:
     host: localhost
     port: 6379

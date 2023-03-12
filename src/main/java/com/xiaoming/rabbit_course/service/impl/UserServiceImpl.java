@@ -110,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @return
      */
     @Override
-    public Result<User> findByPhone(String username) {
+    public Result<User> findByusername(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername,username);
         User user = getOne(lambdaQueryWrapper);

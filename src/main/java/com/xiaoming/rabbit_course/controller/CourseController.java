@@ -20,7 +20,7 @@ public class CourseController {
     private CourseService courseService;
     @ApiOperation("新增课程")
     @Secured("ROLE_ADMIN")
-    @PostMapping("/save")
+    @PostMapping
     public Result<String> save(@ApiParam("课程信息") @RequestBody Course course){
         if (courseService.save(course)){
             return Result.ok("添加课程成功");
@@ -35,7 +35,7 @@ public class CourseController {
 //    }
     @ApiOperation("修改课程信息")
     @Secured("ROLE_ADMIN")
-    @PutMapping("/update")
+    @PutMapping
     public Result<String> update(@ApiParam("要修改的课程信息") @RequestBody Course course){
         if (courseService.updateById(course)){
             return Result.ok("修改课程成功");

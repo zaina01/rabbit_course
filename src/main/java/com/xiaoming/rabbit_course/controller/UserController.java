@@ -6,16 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoming.rabbit_course.common.Result;
 import com.xiaoming.rabbit_course.entity.User;
 import com.xiaoming.rabbit_course.service.UserService;
-import com.xiaoming.rabbit_course.utils.ConcealDataUtils;
+
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang.StringUtils;
+
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,29 +52,29 @@ public class UserController {
     }
     @ApiOperation("根据id查询用户信息 该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
-    @GetMapping("/findById")
-    public Result<User> findById(@ApiParam("用户ID") @NotNull(message = "id不能为空") Long id) {
+    @GetMapping("/{id}")
+    public Result<User> findById(@ApiParam("用户ID") @NotNull(message = "id不能为空") @PathVariable Long id) {
         log.info("id:{}", id);
 //        log.info("用户{}调用了查询接口", SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         return userService.findById(id);
     }
     @ApiOperation("用户查询个人信息 该接口无参")
 //    @Secured("ROLE_ADMIN")
-    @GetMapping("/getUser")
-    public Result<User> findByPhone() {
+    @GetMapping
+    public Result<User> findByusername() {
         String username=SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         log.info("用户{}调用了查询接口",username);
-        return userService.findByPhone(username);
+        return userService.findByusername(username);
     }
     @ApiOperation("根据id更新用户信息")
-    @PutMapping("/update")
+    @PutMapping
     public Result<String> updateById(@ApiParam("用户信息") @RequestBody User user) {
         log.info("user:{}", user);
         return userService.serviceUpdateById(user);
     }
     @ApiOperation("根据id删除用户  该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public Result<String> delete(@ApiParam("用户ID") @NotNull(message = "id不能为空") Long id) {
         if (!userService.removeById(id)) {
             return Result.error("删除成功");
@@ -84,8 +83,8 @@ public class UserController {
     }
     @ApiOperation("分页查询用户信息，该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
-    @GetMapping("/page")
-    public Result<Page> page(@ApiParam("页码") int page,@ApiParam("每页显示数") int size,@ApiParam("查询条件手机号，可传可不传") String username){
+    @GetMapping("/{page}/{size}/{username}")
+    public Result<Page> page(@ApiParam("页码") @PathVariable int page,@ApiParam("每页显示数") @PathVariable int size,@ApiParam("查询条件手机号，可传可不传") @PathVariable String username){
         return userService.findAll(page,size,username);
     }
 }
