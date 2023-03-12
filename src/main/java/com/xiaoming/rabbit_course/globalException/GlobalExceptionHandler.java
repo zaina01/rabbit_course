@@ -3,6 +3,7 @@ package com.xiaoming.rabbit_course.globalException;
 import com.xiaoming.rabbit_course.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -22,6 +23,11 @@ public class GlobalExceptionHandler {
     public Result<String> exceptionHandler(AccessDeniedException ex){
         log.info(ex.getMessage());
         return Result.error("无访问权限");
+    }
+    @ExceptionHandler(BadCredentialsException.class)
+    public Result<String> exceptionHandler(BadCredentialsException ex){
+        log.info(ex.getMessage());
+        return Result.error("用户名或密码错误");
     }
 
     @ExceptionHandler(CustomException.class)
@@ -44,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public Result<String> exceptionHandler(RuntimeException ex){
         log.info(ex.getMessage());
-        ex.printStackTrace();
+//        ex.printStackTrace();
         return Result.error(ex.getMessage());
     }
 
