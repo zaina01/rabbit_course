@@ -80,7 +80,7 @@ public class CommonController {
      */
     @ApiOperation("加载图片")
     @GetMapping("/avatarDownload")
-    public void avatarDownload(@ApiParam("要加载的图片名称") String name, HttpServletResponse response) {
+    public void avatarDownload(@ApiParam(value ="要加载的图片名称") String name, HttpServletResponse response) {
         try {
             //输入流读取文件
             File dir = null;

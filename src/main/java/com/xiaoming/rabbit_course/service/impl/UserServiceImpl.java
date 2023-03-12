@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Page<User> pageInfo = new Page<>(page, size);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.ne(User::getRole,"ROLE_ADMIN");
-        queryWrapper.eq(StringUtils.isNotBlank(username),User::getUsername,username);
+        queryWrapper.like(StringUtils.isNotBlank(username),User::getUsername,username);
         Page<User> userPage = page(pageInfo,queryWrapper);
         return Result.ok("查询成功",userPage);
     }

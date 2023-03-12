@@ -32,7 +32,7 @@ public class UserController {
     private UserService userService;
     @ApiOperation("登录接口")
     @PostMapping("/login")
-    public Result<Map<String,String>> login(@ApiParam("账号和密码") @RequestBody User user){
+    public Result<Map<String,String>> login(@ApiParam(value ="账号和密码") @RequestBody User user){
         //登录
         return userService.login(user);
     }
@@ -46,14 +46,14 @@ public class UserController {
 
     @ApiOperation("注册接口")//接口描述
     @PostMapping("/signIn")
-    public Result<String> signIn(@ApiParam("注册信息 用户邮箱 账号 密码不能为空 密码长度应该在6-20之间") @Validated @RequestBody User user) {
+    public Result<String> signIn(@ApiParam(value ="注册信息 用户邮箱 账号 密码不能为空 密码长度应该在6-20之间") @Validated @RequestBody User user) {
         log.info("user:{}", user);
         return userService.signIn(user);
     }
     @ApiOperation("根据id查询用户信息 该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
     @GetMapping("/{id}")
-    public Result<User> findById(@ApiParam("用户ID") @NotNull(message = "id不能为空") @PathVariable Long id) {
+    public Result<User> findById(@ApiParam(value ="用户ID",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id) {
         log.info("id:{}", id);
 //        log.info("用户{}调用了查询接口", SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         return userService.findById(id);
@@ -68,14 +68,14 @@ public class UserController {
     }
     @ApiOperation("根据id更新用户信息")
     @PutMapping
-    public Result<String> updateById(@ApiParam("用户信息") @RequestBody User user) {
+    public Result<String> updateById(@ApiParam(value ="用户信息") @RequestBody User user) {
         log.info("user:{}", user);
         return userService.serviceUpdateById(user);
     }
     @ApiOperation("根据id删除用户  该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
     @DeleteMapping
-    public Result<String> delete(@ApiParam("用户ID") @NotNull(message = "id不能为空") Long id) {
+    public Result<String> delete(@ApiParam(value ="用户ID",example = "0") @NotNull(message = "id不能为空") Long id) {
         if (!userService.removeById(id)) {
             return Result.error("删除成功");
         }
@@ -84,7 +84,7 @@ public class UserController {
     @ApiOperation("分页查询用户信息，该接口只有ROLE_ADMIN权限才可访问")
     @Secured("ROLE_ADMIN")
     @GetMapping("/{page}/{size}")
-    public Result<Page> page(@ApiParam("页码") @NotNull(message = "page不能为空") @PathVariable int page,@ApiParam("每页显示数") @NotNull(message = "size不能为空") @PathVariable int size,@ApiParam("查询条件手机号，可传可不传") String username){
+    public Result<Page> page(@ApiParam(value ="页码",example = "0") @NotNull(message = "page不能为空") @PathVariable Integer page,@ApiParam(value = "每页显示数",example = "0") @NotNull(message = "size不能为空") @PathVariable Integer size,@ApiParam("查询条件手机号，可传可不传") String username){
         return userService.findAll(page,size,username);
     }
 }

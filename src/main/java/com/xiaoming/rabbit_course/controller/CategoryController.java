@@ -22,7 +22,7 @@ public class CategoryController {
     @ApiOperation("新增分类 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PostMapping
-    public Result<String> save(@ApiParam("分类信息") @RequestBody Category category){
+    public Result<String> save(@ApiParam(value ="分类信息") @RequestBody Category category){
         if (categoryService.save(category)){
             return Result.ok("添加分类成功");
         }
@@ -31,7 +31,7 @@ public class CategoryController {
     @Secured("ROLE_ADMIN")
     @ApiOperation("删除分类 需要ROLE_ADMIN权限")
     @DeleteMapping
-    public Result<String> delete(@ApiParam("分类id") @NotNull(message = "id不能为空") Long id){
+    public Result<String> delete(@ApiParam(value = "分类id",example = "16341862059868") @NotNull(message = "id不能为空") Long id){
         return categoryService.delete(id);
     }
     @Secured("ROLE_ADMIN")
@@ -45,7 +45,7 @@ public class CategoryController {
     }
     @ApiOperation("/查询分类下的课程")
     @GetMapping("/{id}")
-    public Result<Category> findById(@ApiParam("分类ID") @NotNull(message = "id不能为空") @PathVariable Long id){
+    public Result<Category> findById(@ApiParam(value = "分类ID",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
         return categoryService.findById(id);
     }
     @ApiOperation("/查询全部分类")
