@@ -50,8 +50,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public Result<String> exceptionHandler(RuntimeException ex){
         log.info(ex.getMessage());
-//        ex.printStackTrace();
-        return Result.error(ex.getMessage());
+        ex.printStackTrace();
+        return Result.error("网络繁忙");
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

@@ -68,7 +68,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             LambdaQueryWrapper<Course> QueryWrapper=new LambdaQueryWrapper<>();
             QueryWrapper.eq(Course::getCategoryId,item.getId());
             int count = courseService.count(QueryWrapper);
-            categoryDto.setSize(count);
+            categoryDto.setCourseSize(count);
             //创建日期时间 改成创建日期
             categoryDto.setCreateDate(item.getCreateTime().toLocalDate());
             return categoryDto;

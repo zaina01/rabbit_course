@@ -11,5 +11,5 @@ import java.util.List;
 public class CategoryDto extends Category {
     private List<Course> courses;
     private LocalDate createDate;
-    private Integer size;
+    private Integer courseSize;
 }
