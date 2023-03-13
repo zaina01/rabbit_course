@@ -1,11 +1,13 @@
 package com.xiaoming.rabbit_course.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoming.rabbit_course.common.Result;
 import com.xiaoming.rabbit_course.entity.Category;
 import com.xiaoming.rabbit_course.service.CategoryService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.models.auth.In;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,12 +51,10 @@ public class CategoryController {
         return categoryService.findById(id);
     }
     @ApiOperation("/查询全部分类")
-    @GetMapping
-    public Result<List<Category>> findAll(){
-        LambdaQueryWrapper<Category> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.orderByDesc(Category::getSort).orderByDesc(Category::getUpdateTime);
-        List<Category> list = categoryService.list(lambdaQueryWrapper);
-        return Result.ok("成功",list);
+    @GetMapping("/{page}/{size}")
+    public Result<Page> findAll(@PathVariable Integer page,@PathVariable Integer size){
+        return categoryService.findAll(page,size);
+
     }
 
 }

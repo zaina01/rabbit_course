@@ -41,8 +41,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
         Page<Course> coursePage = new Page<>(page, size);
         LambdaQueryWrapper<Course> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(StringUtils.isNotBlank(name),Course::getName,name);
-        Page<Course> courses = page(coursePage, lambdaQueryWrapper);
-        return Result.ok("查询成功",courses);
+        page(coursePage, lambdaQueryWrapper);
+        return Result.ok("查询成功",coursePage);
     }
 
     @Override

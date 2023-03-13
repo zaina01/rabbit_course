@@ -1,6 +1,7 @@
 package com.xiaoming.rabbit_course.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoming.rabbit_course.Dto.CategoryDto;
 import com.xiaoming.rabbit_course.common.Result;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
@@ -48,5 +50,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             return Result.ok("删除分类成功");
         }
         return Result.error("删除分类失败");
+    }
+
+    @Override
+    public Result<Page> findAll(Integer page,Integer size) {
+        Page<Category> categoryPage = new Page<>(page, size);
+        Page<CategoryDto> categoryDtoPage= new Page<>();
+        LambdaQueryWrapper<Category> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.orderByDesc(Category::getSort).orderByDesc(Category::getUpdateTime);
+        page(categoryPage, lambdaQueryWrapper);
+        BeanUtils.copyProperties(categoryPage,categoryDtoPage,"records");
+        List<Category> records = categoryPage.getRecords().stream().map((item)->{
+            CategoryDto categoryDto = new CategoryDto();
+            BeanUtils.copyProperties(item,categoryDto);
+            LambdaQueryWrapper<Course> QueryWrapper=new LambdaQueryWrapper<>();
+            QueryWrapper.eq(Course::getCategoryId,item.getId());
+            int count = courseService.count(QueryWrapper);
+            categoryDto.setSize(count);
+            categoryDto.setCreateDate(item.getCreateTime().toLocalDate());
+            return categoryDto;
+        }).collect(Collectors.toList());
+
+        return Result.ok("查询成功",categoryDtoPage);
     }
 }
