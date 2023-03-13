@@ -4,6 +4,7 @@ import com.xiaoming.rabbit_course.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,6 +27,11 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(BadCredentialsException.class)
     public Result<String> exceptionHandler(BadCredentialsException ex){
+        log.info(ex.getMessage());
+        return Result.error("用户名或密码错误");
+    }
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public Result<String> exceptionHandler(InternalAuthenticationServiceException ex){
         log.info(ex.getMessage());
         return Result.error("用户名或密码错误");
     }
