@@ -13,8 +13,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -39,12 +43,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    //配置springSecurity相关信息
+    //配置springSecurity跨域访问
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        //所有的请求都允许跨域
+        source.registerCorsConfiguration("/**",corsConfiguration);
+        return source;
+    }
 
+    //配置springSecurity相关信息
     @Override
     public void configure(HttpSecurity http) throws Exception {
                 //关闭csrf
         http.csrf().disable()
+//                开启跨域
+                .cors()
+//                 配置跨域
+                .configurationSource(corsConfigurationSource()).and()
                 //不通过Session获取SecurityContext
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
