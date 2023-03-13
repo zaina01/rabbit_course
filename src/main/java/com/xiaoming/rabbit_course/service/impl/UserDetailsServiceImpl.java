@@ -21,6 +21,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Resource
     private UserMapper userMapper;
 
+    /**
+     * 登录功能
+     * @param s
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 //        LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();

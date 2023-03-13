@@ -20,9 +20,11 @@ public class UserCourseController {
     public Result<String> save(@RequestBody UserCourse userCourse){
         return userCourseService.insert(userCourse);
     }
+
+
     @ApiOperation("退课")
     @DeleteMapping("/{courseId}")
-    public Result<String> delete(@ApiParam(value = "课程Id") @PathVariable Long courseId){
+    public Result<String> delete(@ApiParam(value = "课程Id",example ="0") @PathVariable Long courseId){
         return userCourseService.delete(courseId);
     }
 }

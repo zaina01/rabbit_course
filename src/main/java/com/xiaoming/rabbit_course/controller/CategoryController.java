@@ -52,8 +52,8 @@ public class CategoryController {
     }
     @ApiOperation("/查询全部分类")
     @GetMapping("/{page}/{size}")
-    public Result<Page> findAll(@PathVariable Integer page,@PathVariable Integer size){
-        return categoryService.findAll(page,size);
+    public Result<Page> findAll(@PathVariable Integer page,@PathVariable Integer size,@ApiParam("查询条件，可传可不传")String name){
+        return categoryService.findAll(page,size,name);
 
     }
 

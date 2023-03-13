@@ -12,7 +12,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCourse> implements UserCourseService {
-
+    /**
+     * 选课
+     * @param userCourse
+     * @return
+     */
     @Override
     public Result<String> insert(UserCourse userCourse) {
 //        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -34,9 +38,15 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
         return Result.error("选课失败");
     }
 
+    /**
+     * 退课
+     * @param courseId
+     * @return
+     */
     @Override
     public Result<String> delete(Long courseId) {
         Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+
         LambdaQueryWrapper<UserCourse> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(UserCourse::getUserId,userId).eq(UserCourse::getCourseId,courseId);
         if (remove(lambdaQueryWrapper)){

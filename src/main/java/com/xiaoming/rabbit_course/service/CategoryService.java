@@ -10,5 +10,5 @@ public interface CategoryService extends IService<Category> {
 
     Result<String> delete(Long id);
 
-    Result<Page> findAll(Integer page,Integer size);
+    Result<Page> findAll(Integer page,Integer size,String name);
 }

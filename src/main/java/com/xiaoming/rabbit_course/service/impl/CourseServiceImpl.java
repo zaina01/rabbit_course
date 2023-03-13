@@ -23,6 +23,12 @@ import java.util.List;
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implements CourseService {
     @Resource
     private EpisodeService episodeService;
+
+    /**
+     * 查询课程信息，并查询课程下的课程片段
+     * @param id
+     * @return
+     */
     @Override
     public Result<Course> findById(Long id) {
         Course course = getById(id);
@@ -36,6 +42,13 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
         return Result.ok("查询成功",courseDto);
     }
 
+    /**
+     * 课程分页查询
+     * @param page 页码
+     * @param size 数量
+     * @param name 查询条件
+     * @return
+     */
     @Override
     public Result<Page> findAll(int page, int size, String name) {
         Page<Course> coursePage = new Page<>(page, size);
@@ -45,9 +58,15 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
         return Result.ok("查询成功",coursePage);
     }
 
+    /**
+     * 根据课程id 删除课程
+     * @param id 课程id
+     * @return
+     */
     @Override
     public Result<String> delete(Long id) {
         LambdaQueryWrapper<Episode> queryWrapper = new LambdaQueryWrapper<>();
+        //先查询是否关联的有课程片段，如果有不允许删除
         queryWrapper.eq(Episode::getCourseId,id);
         int count = episodeService.count(queryWrapper);
         if(count>0){
