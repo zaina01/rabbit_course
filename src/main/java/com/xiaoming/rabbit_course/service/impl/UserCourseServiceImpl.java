@@ -19,12 +19,12 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
      */
     @Override
     public Result<String> insert(UserCourse userCourse) {
-//        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        synchronized (principal) {
+        Long credentials = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        synchronized (credentials.toString().intern()) {  //.intern()返回字符串规范对象，不会直接new 新字符串对象，先去常量池找
             //查询用户是否已选过该课程
             LambdaQueryWrapper<UserCourse> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(UserCourse::getCourseId, userCourse.getCourseId());
-            lambdaQueryWrapper.eq(UserCourse::getUserId, userCourse.getUserId());
+            lambdaQueryWrapper.eq(UserCourse::getUserId, credentials);
             UserCourse one = getOne(lambdaQueryWrapper);
             //用户已选过该课程
             if (one != null) {
@@ -34,7 +34,7 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
             if (save(userCourse)) {
                 return Result.ok("选课成功");
             }
-//        }
+        }
         return Result.error("选课失败");
     }
 

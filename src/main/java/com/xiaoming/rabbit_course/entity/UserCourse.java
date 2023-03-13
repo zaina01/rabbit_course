@@ -2,10 +2,13 @@ package com.xiaoming.rabbit_course.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+@ApiModel("用户选课")
 @Data
 public class UserCourse implements Serializable {
     private static final long serialVersionUID=1L;
@@ -13,8 +16,10 @@ public class UserCourse implements Serializable {
     private Long id;
 
     //用户id
+    @ApiModelProperty("用户id")
     private Long userId;
     //课程id
+    @ApiModelProperty("课程id")
     private Long courseId;
     //创建时间
     @TableField(fill = FieldFill.INSERT)

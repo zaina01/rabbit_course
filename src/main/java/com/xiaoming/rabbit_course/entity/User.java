@@ -27,6 +27,7 @@ public class User implements Serializable {
     @ApiModelProperty("用户账号")
     @NotBlank(message = "账号不能为空")
     private String username;
+
     @ApiModelProperty("用户密码")
     @NotBlank(message = "密码不能为空")
     @Length(min = 5,max = 20,message = "密码长度应该在6-20之间")
@@ -34,14 +35,17 @@ public class User implements Serializable {
     private String password;
 
     //    性别 1:男性, 2: 女性
+    @ApiModelProperty("性别1:男性, 2: 女性")
     private Integer sex;
 
     //    头像
+    @ApiModelProperty("性别1:男性, 2: 女性")
     private String avatar;
-
-    //    状态 0:禁用，1:正常
+    @ApiModelProperty("状态 1:禁用，0:正常")
+    //    状态 1:禁用，0:正常
     private Integer status;
 //    角色
+    @ApiModelProperty("权限")
     private String role;
 
     //    创建时间

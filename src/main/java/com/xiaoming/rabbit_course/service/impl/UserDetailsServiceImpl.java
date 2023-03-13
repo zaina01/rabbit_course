@@ -2,6 +2,7 @@ package com.xiaoming.rabbit_course.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaoming.rabbit_course.entity.User;
+import com.xiaoming.rabbit_course.globalException.CustomException;
 import com.xiaoming.rabbit_course.mapper.UserMapper;
 import com.xiaoming.rabbit_course.service.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //        queryWrapper.eq(User::getUsername,s);
         User user = userMapper.selectLogin(s);
         if (Objects.isNull(user)) {
-            throw new RuntimeException("用户名或密码错误");
+            throw new CustomException("用户名或密码错误");
         }
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         if (StringUtils.isNotBlank(user.getRole())) {

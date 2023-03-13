@@ -19,7 +19,7 @@ import java.util.List;
 public class CourseController {
     @Resource
     private CourseService courseService;
-    @ApiOperation("新增课程")
+    @ApiOperation("新增课程 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PostMapping
     public Result<String> save(@ApiParam(value ="课程信息") @RequestBody Course course){
@@ -43,7 +43,7 @@ public class CourseController {
         }
         return Result.error("修改课程失败");
     }
-    @ApiOperation("/查询课程信息")
+    @ApiOperation("/查询课程信息以及课程下关联的课程片段")
     @GetMapping("/{id}")
     public Result<Course> findById(@ApiParam(value ="课程ID",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
         return courseService.findById(id);
