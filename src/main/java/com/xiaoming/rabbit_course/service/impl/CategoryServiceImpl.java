@@ -58,19 +58,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         Page<CategoryDto> categoryDtoPage= new Page<>();
         LambdaQueryWrapper<Category> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.orderByDesc(Category::getSort).orderByDesc(Category::getUpdateTime);
+        //分页查询分类
         page(categoryPage, lambdaQueryWrapper);
         BeanUtils.copyProperties(categoryPage,categoryDtoPage,"records");
-        List<Category> records = categoryPage.getRecords().stream().map((item)->{
+        List<CategoryDto> records = categoryPage.getRecords().stream().map((item)->{
             CategoryDto categoryDto = new CategoryDto();
             BeanUtils.copyProperties(item,categoryDto);
+            //查询分类下课程数量
             LambdaQueryWrapper<Course> QueryWrapper=new LambdaQueryWrapper<>();
             QueryWrapper.eq(Course::getCategoryId,item.getId());
             int count = courseService.count(QueryWrapper);
             categoryDto.setSize(count);
+            //创建日期时间 改成创建日期
             categoryDto.setCreateDate(item.getCreateTime().toLocalDate());
             return categoryDto;
         }).collect(Collectors.toList());
-
+        //添加分页数据
+        categoryDtoPage.setRecords(records);
         return Result.ok("查询成功",categoryDtoPage);
     }
 }
