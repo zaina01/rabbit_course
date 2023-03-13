@@ -23,4 +23,5 @@ public interface UserService extends IService<User> {
 
     Result<Page> findAll(int page, int size,String username);
 
+    boolean usernameExists(String username);
 }

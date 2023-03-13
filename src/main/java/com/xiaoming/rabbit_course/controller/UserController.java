@@ -42,6 +42,14 @@ public class UserController {
         //登录
         return userService.logout();
     }
+    @ApiOperation("查询用户名是否已经存在")
+    @GetMapping("/exists")
+    public Result<String> usernameExists(String username){
+        if (userService.usernameExists(username)){
+            return Result.error("用户名已经存在");
+        }
+        return Result.ok("用户名可以使用");
+    }
 
 
     @ApiOperation("注册接口")//接口描述

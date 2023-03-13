@@ -36,6 +36,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户登录
+     *
      * @param user
      * @return
      */
@@ -51,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //如果认证通过，使用userId生成一个jwt
         org.springframework.security.core.userdetails.User loginUser = (org.springframework.security.core.userdetails.User) authenticate.getPrincipal();
         String username = loginUser.getUsername();
-        String token = JwtUtil.createJWT(username,60*60*1000L*24);
+        String token = JwtUtil.createJWT(username, 60 * 60 * 1000L * 24);
 //        //把用户信息存到redis userId 作为key
 //        stringRedisTemplate.opsForValue().set("login",token);
         Map<String, String> map = new HashMap<>();
@@ -62,6 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户退出登录
+     *
      * @return
      */
     @Override
@@ -73,21 +75,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户注册
+     *
      * @param user
      * @return
      */
     @Override
     public Result<String> signIn(User user) {
-        user.setAvatar("100000000000000001.jpg");
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        if (save(user)) {
-            return Result.ok("注册成功");
+        synchronized (user.getUsername().intern()) {
+            if (usernameExists(user.getUsername())) {
+                return Result.error("注册失败用户名已被使用");
+            }
+            user.setAvatar("100000000000000001.jpg");
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            if (save(user)) {
+                return Result.ok("注册成功");
+            }
+            return Result.error("注册失败");
         }
-        return Result.error("注册失败");
     }
 
     /**
      * 修改用户信息
+     *
      * @param user
      * @return
      */
@@ -106,13 +115,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户查询个人信息
+     *
      * @param username
      * @return
      */
     @Override
     public Result<User> findByusername(String username) {
-        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(User::getUsername,username);
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username);
         User user = getOne(lambdaQueryWrapper);
         if (user != null) {
 //            user.setPassword("");
@@ -123,6 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 管理员根据id查用户信息
+     *
      * @param id
      * @return
      */
@@ -138,19 +149,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户信息分页查询
+     *
      * @param page
      * @param size
      * @param username
      * @return
      */
     @Override
-    public Result<Page> findAll(int page, int size,String username) {
+    public Result<Page> findAll(int page, int size, String username) {
         Page<User> pageInfo = new Page<>(page, size);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.ne(User::getRole,"ROLE_ADMIN");
-        queryWrapper.like(StringUtils.isNotBlank(username),User::getUsername,username);
-        page(pageInfo,queryWrapper);
-        return Result.ok("查询成功",pageInfo);
+        queryWrapper.ne(User::getRole, "ROLE_ADMIN");
+        queryWrapper.like(StringUtils.isNotBlank(username), User::getUsername, username);
+        page(pageInfo, queryWrapper);
+        return Result.ok("查询成功", pageInfo);
+    }
+
+    @Override
+    public boolean usernameExists(String username) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username);
+        User one = getOne(lambdaQueryWrapper);
+        return one != null;
     }
 
 }
