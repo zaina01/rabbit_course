@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @ApiModel("用户类")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    @ApiModelProperty("用户id")
     private Long id;
 
     //    昵称
@@ -23,7 +23,7 @@ public class User implements Serializable {
     @NotBlank(message = "邮箱不能为空")
     private String email;
 
-    //    手机号
+    //    用户账号
     @ApiModelProperty("用户账号")
     @NotBlank(message = "账号不能为空")
     private String username;
@@ -49,10 +49,12 @@ public class User implements Serializable {
     private String role;
 
     //    创建时间
+    @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     //    更新时间
+    @ApiModelProperty("更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

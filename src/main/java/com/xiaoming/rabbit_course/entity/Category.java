@@ -26,10 +26,12 @@ public class Category implements Serializable {
     private Integer sort;
 
     //创建时间
+    @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
     //更新时间
+    @ApiModelProperty("更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

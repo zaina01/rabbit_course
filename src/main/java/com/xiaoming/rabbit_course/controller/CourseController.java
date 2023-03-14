@@ -21,7 +21,7 @@ public class CourseController {
     private CourseService courseService;
     @ApiOperation("新增课程 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
-    @PostMapping
+    @PostMapping(consumes = "application/json",produces = "application/json")
     public Result<String> save(@ApiParam(value ="课程信息") @RequestBody Course course){
         if (courseService.save(course)){
             return Result.ok("添加课程成功");
@@ -36,7 +36,7 @@ public class CourseController {
     }
     @ApiOperation("修改课程信息 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
-    @PutMapping
+    @PutMapping(consumes = "application/json",produces = "application/json")
     public Result<String> update(@ApiParam(value ="要修改的课程信息") @RequestBody Course course){
         if (courseService.updateById(course)){
             return Result.ok("修改课程成功");

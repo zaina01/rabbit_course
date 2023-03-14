@@ -9,22 +9,29 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/userCourse")
 public class UserCourseController {
     @Resource
     private UserCourseService userCourseService;
-    @ApiOperation("选课")
-    @PostMapping
+    @ApiOperation("收藏")
+    @PostMapping(consumes = "application/json",produces = "application/json")
     public Result<String> save(@RequestBody UserCourse userCourse){
         return userCourseService.insert(userCourse);
     }
 
 
-    @ApiOperation("退课")
+    @ApiOperation("取消收藏")
     @DeleteMapping("/{courseId}")
     public Result<String> delete(@ApiParam(value = "课程Id",example ="0") @PathVariable Long courseId){
         return userCourseService.delete(courseId);
+    }
+
+    @ApiOperation("查看收藏")
+    @GetMapping
+    public Result<List<Course>> findByUserId(){
+        return userCourseService.findByUserId();
     }
 }

@@ -8,11 +8,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-@ApiModel("用户选课")
+@ApiModel("用户收藏")
 @Data
 public class UserCourse implements Serializable {
     private static final long serialVersionUID=1L;
-
+    @ApiModelProperty("主键id")
     private Long id;
 
     //用户id
@@ -21,10 +21,13 @@ public class UserCourse implements Serializable {
     //课程id
     @ApiModelProperty("课程id")
     private Long courseId;
+
     //创建时间
+    @ApiModelProperty("创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     //更新时间
+    @ApiModelProperty("更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

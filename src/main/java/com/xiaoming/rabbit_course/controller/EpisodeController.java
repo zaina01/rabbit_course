@@ -20,7 +20,7 @@ public class EpisodeController {
 
     @Secured("ROLE_ADMIN")
     @ApiOperation("添加课程片段 需要ROLE_ADMIN权限")
-    @PostMapping
+    @PostMapping(consumes = "application/json",produces = "application/json")
     public Result<String> save(@RequestBody @ApiParam(value = "添加课程片段") Episode episode){
         if (episodeService.save(episode)){
             return Result.ok("添加成功");
@@ -39,7 +39,7 @@ public class EpisodeController {
     }
     @Secured("ROLE_ADMIN")
     @ApiOperation("修改除课程片段 需要ROLE_ADMIN权限")
-    @PutMapping
+    @PutMapping(consumes = "application/json",produces = "application/json")
     public Result<String> update(@ApiParam(value = "要修改的数据") @RequestBody Episode episode){
         if (episodeService.updateById(episode)){
             return Result.ok("修改成功");

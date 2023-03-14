@@ -31,13 +31,13 @@ public class UserController {
     @Resource
     private UserService userService;
     @ApiOperation("登录接口")
-    @PostMapping("/login")
+    @PostMapping(value = "/login",consumes = "application/json",produces = "application/json")
     public Result<Map<String,String>> login(@ApiParam(value ="账号和密码") @RequestBody User user){
         //登录
         return userService.login(user);
     }
     @ApiOperation("退出登录")
-    @PostMapping("/logout")
+    @PostMapping(value = "/logout",consumes = "application/json",produces = "application/json")
     public Result<String> login(){
         //登录
         return userService.logout();
@@ -53,7 +53,7 @@ public class UserController {
 
 
     @ApiOperation("注册接口")//接口描述
-    @PostMapping("/signIn")
+    @PostMapping(value = "/signIn",consumes = "application/json",produces = "application/json")
     public Result<String> signIn(@ApiParam(value ="注册信息 用户邮箱 账号 密码不能为空 密码长度应该在6-20之间") @Validated @RequestBody User user) {
         log.info("user:{}", user);
         return userService.signIn(user);
@@ -75,7 +75,7 @@ public class UserController {
         return userService.findByusername(username);
     }
     @ApiOperation("根据id更新用户信息")
-    @PutMapping
+    @PutMapping(consumes = "application/json",produces = "application/json")
     public Result<String> updateById(@ApiParam(value ="用户信息") @RequestBody User user) {
         log.info("user:{}", user);
         return userService.serviceUpdateById(user);

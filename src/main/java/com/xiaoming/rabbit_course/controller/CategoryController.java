@@ -23,7 +23,7 @@ public class CategoryController {
 
     @ApiOperation("新增分类 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
-    @PostMapping
+    @PostMapping(consumes = "application/json",produces = "application/json")
     public Result<String> save(@ApiParam(value ="分类信息") @RequestBody Category category){
         if (categoryService.save(category)){
             return Result.ok("添加分类成功");
@@ -38,7 +38,7 @@ public class CategoryController {
     }
     @Secured("ROLE_ADMIN")
     @ApiOperation("更新分类 需要ROLE_ADMIN权限")
-    @PutMapping
+    @PutMapping(consumes = "application/json",produces = "application/json")
     public Result<String> update(@ApiParam("要修改的分类信息") @RequestBody Category category){
         if (categoryService.updateById(category)){
             return Result.ok("修改分类成功");

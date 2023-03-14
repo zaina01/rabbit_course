@@ -70,7 +70,7 @@ public class CommonController {
         } catch (IOException e) {
             throw new CustomException("上传失败");
         }
-        return Result.ok(filename);
+        return Result.ok("上传成功",filename);
     }
 
     /**
@@ -78,9 +78,9 @@ public class CommonController {
      * @param name
      * @param response
      */
-    @ApiOperation("加载图片")
-    @GetMapping("/avatarDownload")
-    public void avatarDownload(@ApiParam(value ="要加载的图片名称") String name, HttpServletResponse response) {
+    @ApiOperation("加载文件")
+    @GetMapping("/Download")
+    public void avatarDownload(@ApiParam(value ="要加载的文件名称") String name, HttpServletResponse response) {
         try {
             //输入流读取文件
             File dir = null;
@@ -110,6 +110,7 @@ public class CommonController {
 //        关闭资源
         } catch (IOException e) {
             e.printStackTrace();
+            throw new CustomException("加载失败");
         }
     }
 }
