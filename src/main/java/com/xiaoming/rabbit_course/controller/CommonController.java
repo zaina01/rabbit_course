@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -79,8 +76,8 @@ public class CommonController {
      * @param response
      */
     @ApiOperation("加载文件")
-    @GetMapping("/Download")
-    public void avatarDownload(@ApiParam(value ="要加载的文件名称") String name, HttpServletResponse response) {
+    @GetMapping("/Download/{name}")
+    public void avatarDownload(@ApiParam(value ="要加载的文件名称") @PathVariable String name, HttpServletResponse response) {
         try {
             //输入流读取文件
             File dir = null;
