@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,27 +26,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     /**
      * 根据分类id查询分类并查询所关联的课程
+     *
      * @param id
      * @return
      */
     @Override
     public Result<Category> findById(Long id) {
-        try {
-            Category category = getById(id);
-            //查询分类下的课程
-            List<Course> courses = courseService.list(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, category.getId()));
-            CategoryDto categoryDto = new CategoryDto();
-            //拷贝category 到categoryDto
-            BeanUtils.copyProperties(category, categoryDto);
-            categoryDto.setCourses(courses);
-            return Result.ok("查询成功", categoryDto);
-        } catch (Exception e) {
-            throw new CustomException(e.getMessage());
+//       根据id查询数据库
+        Category category = getById(id);
+        if (category==null){
+            return Result.error("分类不存在");
         }
+        //查询分类下的课程
+        List<Course> courses = courseService.list(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, category.getId()));
+        CategoryDto categoryDto = new CategoryDto();
+        //拷贝category 到categoryDto
+        BeanUtils.copyProperties(category, categoryDto);
+        categoryDto.setCourses(courses);
+        return Result.ok("查询成功", categoryDto);
+
     }
 
     /**
      * 删除分类
+     *
      * @param id
      * @return
      */
@@ -70,30 +72,31 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     /**
      * 分页查询分类
+     *
      * @param page 页码
      * @param size 每页显示数量
      * @return categoryDtoPage
      */
     @Override
-    public Result<Page> findAll(Integer page,Integer size,String name) {
+    public Result<Page> findAll(Integer page, Integer size, String name) {
         Page<Category> categoryPage = new Page<>(page, size);
-        Page<CategoryDto> categoryDtoPage= new Page<>();
-        LambdaQueryWrapper<Category> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        Page<CategoryDto> categoryDtoPage = new Page<>();
+        LambdaQueryWrapper<Category> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         //添加模糊查询
-        lambdaQueryWrapper.like(StringUtils.isNotBlank(name),Category::getName,name);
+        lambdaQueryWrapper.like(StringUtils.isNotBlank(name), Category::getName, name);
         //查询时按照Sort降序，更新时间降序
         lambdaQueryWrapper.orderByDesc(Category::getSort).orderByDesc(Category::getUpdateTime);
         //分页查询分类
         page(categoryPage, lambdaQueryWrapper);
         //拷贝Page
-        BeanUtils.copyProperties(categoryPage,categoryDtoPage,"records");
-        List<CategoryDto> records = categoryPage.getRecords().stream().map((item)->{
+        BeanUtils.copyProperties(categoryPage, categoryDtoPage, "records");
+        List<CategoryDto> records = categoryPage.getRecords().stream().map((item) -> {
             CategoryDto categoryDto = new CategoryDto();
-            BeanUtils.copyProperties(item,categoryDto);
+            BeanUtils.copyProperties(item, categoryDto);
             //查询分类下课程数量
-            LambdaQueryWrapper<Course> QueryWrapper=new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<Course> QueryWrapper = new LambdaQueryWrapper<>();
             //根据分类id查询
-            QueryWrapper.eq(Course::getCategoryId,item.getId());
+            QueryWrapper.eq(Course::getCategoryId, item.getId());
             //统计数量
             int count = courseService.count(QueryWrapper);
             categoryDto.setCourseSize(count);
@@ -103,6 +106,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }).collect(Collectors.toList());
         //添加分页数据
         categoryDtoPage.setRecords(records);
-        return Result.ok("查询成功",categoryDtoPage);
+        return Result.ok("查询成功", categoryDtoPage);
+    }
+
+    @Override
+    public Result<String> updateCategory(Category category) {
+        //更新数据库
+        if (!updateById(category)){
+            return Result.error("更新失败");
+        }
+        return Result.ok("更新成功");
     }
 }

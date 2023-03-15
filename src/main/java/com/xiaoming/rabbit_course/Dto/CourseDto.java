@@ -8,5 +8,7 @@ import java.util.List;
 
 @Data
 public class CourseDto extends Course {
+    private String categoryName;
     private List<Episode> episodes;
+    private Integer episodeSize;
 }
