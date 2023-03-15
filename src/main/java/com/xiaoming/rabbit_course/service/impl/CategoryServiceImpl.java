@@ -38,7 +38,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             return Result.error("分类不存在");
         }
         //查询分类下的课程
-        List<Course> courses = courseService.list(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, category.getId()));
+        LambdaQueryWrapper<Course> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Course::getCategoryId, category.getId())
+                //状态为上架
+                .eq(Course::getStatus,0);
+        List<Course> courses = courseService.list(lambdaQueryWrapper);
         CategoryDto categoryDto = new CategoryDto();
         //拷贝category 到categoryDto
         BeanUtils.copyProperties(category, categoryDto);
