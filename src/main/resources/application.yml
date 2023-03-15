@@ -21,3 +21,6 @@ mybatis-plus:
     db-config:
       id-type: assign_id
 
+rabbit:
+    windowsPath: D:\rabbit\
+    linuxPath:  /usr/rabbit/
