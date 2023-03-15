@@ -11,4 +11,6 @@ public interface CourseService extends IService<Course> {
     Result<Page> findAll(int page, int size, String name);
 
     Result<String> delete(Long id);
+
+    Result<String> updateCourse(Course course);
 }

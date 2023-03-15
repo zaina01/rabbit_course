@@ -32,7 +32,7 @@ public class Course implements Serializable {
     private String avatar;
 
     //    课程状态
-    @ApiModelProperty("课程状态")
+    @ApiModelProperty("课程状态 0上架，1下架")
     private Integer status;
 
     //    课程介绍

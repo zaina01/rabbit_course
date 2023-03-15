@@ -107,4 +107,21 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
         }
         return Result.ok("删除失败");
     }
+
+    @Override
+    public Result<String> updateCourse(Course course) {
+        if (course.getStatus()!=0){
+            updateById(course);
+            return Result.ok("更新成功");
+        }
+        LambdaQueryWrapper<Episode> queryWrapper = new LambdaQueryWrapper<>();
+        //查询是否关联的有课程片段，如果没有不允许启用
+        queryWrapper.eq(Episode::getCourseId,course.getId());
+        int count = episodeService.count(queryWrapper);
+        if (count<1){
+            return  Result.error("该课程还没有章节，无法上架");
+        }
+        updateById(course);
+        return Result.ok("更新成功");
+    }
 }

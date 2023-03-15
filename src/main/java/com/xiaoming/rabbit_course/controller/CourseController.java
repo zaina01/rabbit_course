@@ -23,6 +23,8 @@ public class CourseController {
     @Secured("ROLE_ADMIN")
     @PostMapping(consumes = "application/json",produces = "application/json")
     public Result<String> save(@ApiParam(value ="课程信息") @RequestBody Course course){
+        //添加课程默认为下架状态
+        course.setStatus(1);
         if (courseService.save(course)){
             return Result.ok("添加课程成功");
         }
@@ -38,11 +40,10 @@ public class CourseController {
     @Secured("ROLE_ADMIN")
     @PutMapping(consumes = "application/json",produces = "application/json")
     public Result<String> update(@ApiParam(value ="要修改的课程信息") @RequestBody Course course){
-        if (courseService.updateById(course)){
-            return Result.ok("修改课程成功");
-        }
-        return Result.error("修改课程失败");
+        return courseService.updateCourse(course);
     }
+
+
     @ApiOperation("/查询课程信息以及课程下关联的课程片段")
     @GetMapping("/{id}")
     public Result<Course> findById(@ApiParam(value ="课程ID",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
