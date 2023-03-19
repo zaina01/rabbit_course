@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 @ApiModel("课程章节")
@@ -24,7 +25,7 @@ public class Episode implements Serializable {
 
     //    课程id
     @ApiModelProperty("所属课程id")
-    @NotBlank(message = "所属课程id不能为空")
+    @NotNull(message = "所属课程id不能为空")
     private Long courseId;
     //    视频地址
     @ApiModelProperty("视频地址")

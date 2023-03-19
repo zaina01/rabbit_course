@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 @ApiModel("用户收藏")
@@ -18,11 +18,11 @@ public class UserCourse implements Serializable {
 
     //用户id
     @ApiModelProperty("用户id")
-    @NotBlank(message = "用户id不能为空")
+    @NotNull(message = "用户id不能为空")
     private Long userId;
     //课程id
     @ApiModelProperty("课程id")
-    @NotBlank(message = "课程id不能为空")
+    @NotNull(message = "课程id不能为空")
     private Long courseId;
 
     //创建时间
