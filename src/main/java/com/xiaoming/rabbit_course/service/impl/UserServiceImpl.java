@@ -10,6 +10,7 @@ import com.xiaoming.rabbit_course.service.UserService;
 import com.xiaoming.rabbit_course.utils.ConcealDataUtils;
 import com.xiaoming.rabbit_course.utils.JwtUtil;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Resource
@@ -81,17 +84,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public Result<String> signIn(User user) {
+        //获取锁
         synchronized (user.getUsername().intern()) {
-            if (usernameExists(user.getUsername())) {
-                return Result.error("注册失败用户名已被使用");
-            }
-            user.setAvatar("100000000000000001.jpg");
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            if (save(user)) {
-                return Result.ok("注册成功");
-            }
-            return Result.error("注册失败");
+            //获取当前对象的代理对象
+            UserService proxy = (UserService) AopContext.currentProxy();
+            return proxy.signInUser(user);
         }
+    }
+    @Override
+    public Result<String> signInUser(User user) {
+
+        if (usernameExists(user.getUsername())) {
+            return Result.error("注册失败用户名已被使用");
+        }
+        user.setAvatar("100000000000000001.jpg");
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (this.save(user)) {
+            return Result.ok("注册成功");
+        }
+        return Result.error("注册失败");
+
     }
 
     /**
@@ -106,7 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (StringUtils.isNotBlank(user.getPassword())) {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
-            if (updateById(user)) {
+            if (this.updateById(user)) {
                 return Result.ok("修改成功");
             }
         }
@@ -123,7 +135,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Result<User> findByusername(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername, username);
-        User user = getOne(lambdaQueryWrapper);
+        User user = this.getOne(lambdaQueryWrapper);
         if (user != null) {
 //            user.setPassword("");
             return Result.ok("查询成功", user);
@@ -139,7 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public Result<User> findById(Long id) {
-        User user = getById(id);
+        User user = this.getById(id);
         if (user != null) {
 //            user.setPassword("");
             return Result.ok("查询成功", user);
@@ -161,7 +173,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.ne(User::getRole, "ROLE_ADMIN");
         queryWrapper.like(StringUtils.isNotBlank(username), User::getUsername, username);
-        page(pageInfo, queryWrapper);
+        this.page(pageInfo, queryWrapper);
         return Result.ok("查询成功", pageInfo);
     }
 
@@ -169,7 +181,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean usernameExists(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername, username);
-        User one = getOne(lambdaQueryWrapper);
+        User one = this.getOne(lambdaQueryWrapper);
         return one != null;
     }
 

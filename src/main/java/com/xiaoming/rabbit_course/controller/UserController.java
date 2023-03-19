@@ -76,7 +76,7 @@ public class UserController {
     }
     @ApiOperation("根据id更新用户信息")
     @PutMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> updateById(@ApiParam(value ="用户信息") @RequestBody User user) {
+    public Result<String> updateById(@ApiParam(value ="用户信息") @Validated @RequestBody User user) {
         log.info("user:{}", user);
         return userService.serviceUpdateById(user);
     }

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 @ApiModel("课程")
@@ -17,10 +18,12 @@ public class Course implements Serializable {
 
     //    课程分类id
     @ApiModelProperty("课程所属分类id")
+    @NotBlank(message = "课程所属分类id不能为空")
     private Long categoryId;
 
     //    课程名称
     @ApiModelProperty("课程名称")
+    @NotBlank(message = "课程名不能为空")
     private String name;
 
     //    课程排序

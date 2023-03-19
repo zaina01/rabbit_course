@@ -14,11 +14,12 @@ import com.xiaoming.rabbit_course.service.CourseService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
     @Resource
@@ -33,7 +34,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     public Result<Category> findById(Long id) {
 //       根据id查询数据库
-        Category category = getById(id);
+        Category category = this.getById(id);
         if (category==null){
             return Result.error("分类不存在");
         }
@@ -68,7 +69,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             throw new CustomException("当前分类下关联的有课程，不能删除");
         }
 //        分类下没有关联课程可以删除
-        if (removeById(id)) {
+        if (this.removeById(id)) {
             return Result.ok("删除分类成功");
         }
         return Result.error("删除分类失败");
@@ -91,7 +92,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         //查询时按照Sort降序，更新时间降序
         lambdaQueryWrapper.orderByDesc(Category::getSort).orderByDesc(Category::getUpdateTime);
         //分页查询分类
-        page(categoryPage, lambdaQueryWrapper);
+        this.page(categoryPage, lambdaQueryWrapper);
         //拷贝Page
         BeanUtils.copyProperties(categoryPage, categoryDtoPage, "records");
         List<CategoryDto> records = categoryPage.getRecords().stream().map((item) -> {
@@ -116,7 +117,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     public Result<String> updateCategory(Category category) {
         //更新数据库
-        if (!updateById(category)){
+        if (!this.updateById(category)){
             return Result.error("更新失败");
         }
         return Result.ok("更新成功");

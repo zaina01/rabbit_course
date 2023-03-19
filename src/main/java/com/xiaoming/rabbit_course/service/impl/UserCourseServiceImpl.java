@@ -9,12 +9,14 @@ import com.xiaoming.rabbit_course.globalException.CustomException;
 import com.xiaoming.rabbit_course.mapper.UserCourseMapper;
 import com.xiaoming.rabbit_course.service.CourseService;
 import com.xiaoming.rabbit_course.service.UserCourseService;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCourse> implements UserCourseService {
     @Resource
@@ -28,19 +30,24 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
     public Result<String> insert(UserCourse userCourse) {
         Long credentials = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         synchronized (credentials.toString().intern()) {  //.intern()返回字符串规范对象，不会直接new 新字符串对象，先去常量池找
-            //查询用户是否已收藏过该课程
-            LambdaQueryWrapper<UserCourse> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(UserCourse::getCourseId, userCourse.getCourseId());
-            lambdaQueryWrapper.eq(UserCourse::getUserId, credentials);
-            UserCourse one = getOne(lambdaQueryWrapper);
-            //用户已收藏过该课程
-            if (one != null) {
-                throw new CustomException("不允许重复收藏");
-            }
-            //用户未收藏过该课程，开始保存
-            if (save(userCourse)) {
-                return Result.ok("收藏成功");
-            }
+            UserCourseService currentProxy = (UserCourseService) AopContext.currentProxy();//获取当前对象的代理对象
+            return currentProxy.collect(credentials,userCourse);
+        }
+    }
+    @Override
+    public Result<String> collect (Long credentials, UserCourse userCourse){
+        //查询用户是否已收藏过该课程
+        LambdaQueryWrapper<UserCourse> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(UserCourse::getCourseId, userCourse.getCourseId());
+        lambdaQueryWrapper.eq(UserCourse::getUserId, credentials);
+        UserCourse one = this.getOne(lambdaQueryWrapper);
+        //用户已收藏过该课程
+        if (one != null) {
+            throw new CustomException("不允许重复收藏");
+        }
+        //用户未收藏过该课程，开始保存
+        if (save(userCourse)) {
+            return Result.ok("收藏成功");
         }
         return Result.error("收藏失败");
     }
@@ -56,7 +63,7 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
 
         LambdaQueryWrapper<UserCourse> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(UserCourse::getUserId,userId).eq(UserCourse::getCourseId,courseId);
-        if (remove(lambdaQueryWrapper)){
+        if (this.remove(lambdaQueryWrapper)){
             return Result.ok("取消收藏成功");
         }
         return Result.error("取消收藏失败");
@@ -70,7 +77,7 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
         lambdaQueryWrapper.eq(UserCourse::getUserId,userId);
         lambdaQueryWrapper.select(UserCourse::getCourseId);
         //查询收藏的课程集合
-        List<UserCourse> courseIds = list(lambdaQueryWrapper);
+        List<UserCourse> courseIds = this.list(lambdaQueryWrapper);
         LambdaQueryWrapper<Course> courseLambdaQueryWrapper=new LambdaQueryWrapper<>();
         courseLambdaQueryWrapper.in(Course::getId, courseIds);
         List<Course> courseList = courseService.list(courseLambdaQueryWrapper);
