@@ -9,12 +9,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.models.auth.In;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
@@ -24,7 +25,7 @@ public class CategoryController {
     @ApiOperation("新增分类 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public Result<String> save(@ApiParam(value = "分类信息") @RequestBody Category category) {
+    public Result<String> save(@ApiParam(value = "分类信息") @Validated @RequestBody Category category) {
         if (categoryService.save(category)) {
             return Result.ok("添加分类成功");
         }
@@ -41,7 +42,7 @@ public class CategoryController {
     @Secured("ROLE_ADMIN")
     @ApiOperation("更新分类 需要ROLE_ADMIN权限")
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public Result<String> update(@ApiParam("要修改的分类信息") @RequestBody Category category) {
+    public Result<String> update(@ApiParam("要修改的分类信息") @Validated @RequestBody Category category) {
         return categoryService.updateCategory(category);
     }
 

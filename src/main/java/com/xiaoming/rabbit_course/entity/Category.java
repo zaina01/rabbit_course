@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -19,6 +20,7 @@ public class Category implements Serializable {
 
     //分类名称
     @ApiModelProperty("分类名称")
+    @NotBlank(message = "分类名称不能为空")
     private String name;
 
     //分类排序

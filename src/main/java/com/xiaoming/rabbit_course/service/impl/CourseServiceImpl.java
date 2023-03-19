@@ -17,11 +17,12 @@ import com.xiaoming.rabbit_course.service.EpisodeService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implements CourseService {
     @Resource
@@ -29,22 +30,27 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
     @Resource
     private CategoryService categoryService;
     /**
-     * 查询课程信息，并查询课程下的课程片段
+     * 查询课程信息，并查询课程下的课程章节
      * @param id
      * @return
      */
     @Override
     public Result<Course> findById(Long id) {
-        Course course = getById(id);
+        Course course = this.getById(id);
         if (course==null){
             return Result.error("课程不存在");
         }
+        //查询课程所属分类
         Category category = categoryService.getById(course.getCategoryId());
+        //构造条件查询课程下的章节
         LambdaQueryWrapper<Episode> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Episode::getCourseId,id);
-        queryWrapper.orderByDesc(Episode::getSort).orderByDesc(Episode::getCreateTime);
+        //课程章节按sort降序排序，再按创建时间升序排序
+        queryWrapper.orderByDesc(Episode::getSort).orderByAsc(Episode::getCreateTime);
+        //查询课程下的章节
         List<Episode> episodes = episodeService.list(queryWrapper);
         CourseDto courseDto = new CourseDto();
+        //拷贝bean
         BeanUtils.copyProperties(course,courseDto);
         courseDto.setCategoryName(category.getName());
         courseDto.setEpisodes(episodes);
@@ -65,7 +71,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
         //模糊查询课程条件
         LambdaQueryWrapper<Course> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(StringUtils.isNotBlank(name),Course::getName,name);
-        page(coursePage, lambdaQueryWrapper);
+        this.page(coursePage, lambdaQueryWrapper);
         //bena拷贝
         BeanUtils.copyProperties(coursePage,courseDtoPage,"records");
         List<CourseDto> courseDtos = coursePage.getRecords().stream().map((item) -> {
@@ -96,13 +102,13 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
     @Override
     public Result<String> delete(Long id) {
         LambdaQueryWrapper<Episode> queryWrapper = new LambdaQueryWrapper<>();
-        //先查询是否关联的有课程片段，如果有不允许删除
+        //先查询是否关联的有课程章节，如果有不允许删除
         queryWrapper.eq(Episode::getCourseId,id);
         int count = episodeService.count(queryWrapper);
         if(count>0){
             throw new CustomException("当前课程下关联的有课程视频，无法删除");
         }
-        if (removeById(id)){
+        if (this.removeById(id)){
             return Result.ok("删除成功");
         }
         return Result.ok("删除失败");
@@ -110,18 +116,20 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
 
     @Override
     public Result<String> updateCourse(Course course) {
+        //如果状态不更新为上架状态可直接更新
         if (course.getStatus()!=0){
-            updateById(course);
+            this.updateById(course);
             return Result.ok("更新成功");
         }
         LambdaQueryWrapper<Episode> queryWrapper = new LambdaQueryWrapper<>();
-        //查询是否关联的有课程片段，如果没有不允许启用
+        //查询是否关联的有课程章节，如果没有不允许上架
         queryWrapper.eq(Episode::getCourseId,course.getId());
         int count = episodeService.count(queryWrapper);
         if (count<1){
             return  Result.error("该课程还没有章节，无法上架");
         }
-        updateById(course);
+        //有关联的章节，可以更新上架
+        this.updateById(course);
         return Result.ok("更新成功");
     }
 }

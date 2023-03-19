@@ -8,12 +8,13 @@ import com.xiaoming.rabbit_course.service.CourseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-
+@Validated
 @RestController
 @RequestMapping("/course")
 public class CourseController {
@@ -22,7 +23,7 @@ public class CourseController {
     @ApiOperation("新增课程 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PostMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> save(@ApiParam(value ="课程信息") @RequestBody Course course){
+    public Result<String> save(@ApiParam(value ="课程信息") @Validated @RequestBody Course course){
         //添加课程默认为下架状态
         course.setStatus(1);
         if (courseService.save(course)){
@@ -39,12 +40,12 @@ public class CourseController {
     @ApiOperation("修改课程信息 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PutMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> update(@ApiParam(value ="要修改的课程信息") @RequestBody Course course){
+    public Result<String> update(@ApiParam(value ="要修改的课程信息") @Validated @RequestBody Course course){
         return courseService.updateCourse(course);
     }
 
 
-    @ApiOperation("/查询课程信息以及课程下关联的课程片段")
+    @ApiOperation("/查询课程信息以及课程下关联的课程章节")
     @GetMapping("/{id}")
     public Result<Course> findById(@ApiParam(value ="课程ID",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
         return courseService.findById(id);
