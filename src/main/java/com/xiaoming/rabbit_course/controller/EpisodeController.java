@@ -41,18 +41,18 @@ public class EpisodeController {
     @Secured("ROLE_ADMIN")
     @ApiOperation("修改除课程章节 需要ROLE_ADMIN权限")
     @PutMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> update(@ApiParam(value = "要修改的数据") @RequestBody @Validated Episode episode){
+    public Result<String> update(@ApiParam(value = "要修改的数据") @RequestBody Episode episode){
         if (episodeService.updateById(episode)){
             return Result.ok("修改成功");
         }
         return Result.error("修改失败");
     }
-//    @ApiOperation("查询除课程章节")
-//    @GetMapping("/{id}")
-//    public Result<Episode> findById(@ApiParam(value = "要查询的id",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
-//        Episode episode = episodeService.getById(id);
-//        return Result.ok("查询成功",episode);
-//    }
+    @ApiOperation("查询章节")
+    @GetMapping("/{id}")
+    public Result<Episode> findById(@ApiParam(value = "要查询的id",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
+        Episode episode = episodeService.getById(id);
+        return Result.ok("查询成功",episode);
+    }
 
 //    @ApiOperation("查询课程下的所有章节")
 //    @GetMapping
