@@ -5,6 +5,7 @@ import com.xiaoming.rabbit_course.globalException.CustomException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,6 +39,7 @@ public class CommonController {
     @Value("${rabbit.linuxPath}")
     private String linuxPath;
 
+    private final List<String> contentTypes= Arrays.asList("image/png","image/jpeg","video/mp4");
     /**
      * 头像上传
      *
@@ -49,7 +56,9 @@ public class CommonController {
         String originalFilename = file.getOriginalFilename();
         //截取文件格式
         String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
-
+        String contentType = file.getContentType();
+        long count = contentTypes.stream().filter(s -> s.equals(contentType)).count();
+        if (count<1) throw new CustomException("不支持的文件类型");
         //使用UUID重新生成文件名,防止文件名称重复造成文件覆盖
         String filename = UUID.randomUUID().toString()+substring;
 
@@ -90,12 +99,17 @@ public class CommonController {
                 dir = new File(linuxPath);
             }
             //输入流读取文件
-            FileInputStream fileInputStream = new FileInputStream(dir + name);
-
+            Path path= Paths.get(dir + name);
+            FileInputStream fileInputStream = new FileInputStream(path.toFile());
+            //获取文件类型
+            String mimeType= Files.probeContentType(path);
+            if (StringUtils.isEmpty(mimeType)){
+                throw new CustomException("加载文件失败");
+            }
 //            输出流，写回到浏览器
             ServletOutputStream outputStream = response.getOutputStream();
-
-            response.setContentType("img/jpeg");
+            //设置类型
+            response.setContentType(mimeType);
             int len = 0;
             byte[] bytes = new byte[1024];
             while ((len = fileInputStream.read(bytes)) != -1) {

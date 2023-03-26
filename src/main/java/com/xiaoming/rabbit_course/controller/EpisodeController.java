@@ -33,7 +33,7 @@ public class EpisodeController {
     @ApiOperation("删除课程章节 需要ROLE_ADMIN权限")
     @DeleteMapping("/{id}")
     public Result<String> delete(@ApiParam(value = "要删除的id",example = "0") @NotNull(message = "id不能为空") @PathVariable Long id){
-        if (episodeService.removeById(id)){
+        if (episodeService.delete(id)){
             return Result.ok("删除成功");
         }
         return Result.error("删除失败");
