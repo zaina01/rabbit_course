@@ -3,6 +3,7 @@ package com.xiaoming.rabbit_course.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xiaoming.rabbit_course.Dto.UserPasswordDto;
 import com.xiaoming.rabbit_course.common.Result;
 import com.xiaoming.rabbit_course.config.ValidationGroups;
 import com.xiaoming.rabbit_course.entity.User;
@@ -55,7 +56,7 @@ public class UserController {
 
     @ApiOperation("注册接口")//接口描述
     @PostMapping(value = "/signIn",consumes = "application/json",produces = "application/json")
-    public Result<String> signIn(@ApiParam(value ="注册信息 用户邮箱 账号 密码不能为空 密码长度应该在6-20之间") @Validated @RequestBody User user) {
+    public Result<String> signIn(@ApiParam(value ="注册信息 用户邮箱 账号 密码不能为空 密码长度应该在6-20之间") @Validated(ValidationGroups.Insert.class) @RequestBody User user) {
         log.info("user:{}", user);
         return userService.signIn(user);
     }
@@ -75,7 +76,8 @@ public class UserController {
         log.info("用户{}调用了查询接口",username);
         return userService.findByusername(username);
     }
-    @ApiOperation("根据id更新用户信息")
+    @ApiOperation("根据id更新用户信息ROLE_ADMIN权限访问")
+    @Secured("ROLE_ADMIN")
     @PutMapping(consumes = "application/json",produces = "application/json")
     public Result<String> updateById(@ApiParam(value ="用户信息") @Validated(ValidationGroups.Update.class) @RequestBody User user) {
         log.info("user:{}", user);
@@ -95,5 +97,11 @@ public class UserController {
     @GetMapping("/{page}/{size}")
     public Result<Page> page(@ApiParam(value ="页码",example = "0") @NotNull(message = "page不能为空") @PathVariable Integer page,@ApiParam(value = "每页显示数",example = "0") @NotNull(message = "size不能为空") @PathVariable Integer size,@ApiParam("查询条件手机号，可传可不传") String username){
         return userService.findAll(page,size,username);
+    }
+    @ApiOperation("根据id修改密码")
+    @PutMapping("/password")
+    public Result<String> editPassword(@RequestBody UserPasswordDto userPasswordDto){
+        String username=SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return userService.EditPassword(username,userPasswordDto);
     }
 }

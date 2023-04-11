@@ -3,14 +3,17 @@ package com.xiaoming.rabbit_course.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xiaoming.rabbit_course.Dto.UserPasswordDto;
 import com.xiaoming.rabbit_course.common.Result;
 import com.xiaoming.rabbit_course.entity.User;
+import com.xiaoming.rabbit_course.globalException.CustomException;
 import com.xiaoming.rabbit_course.mapper.UserMapper;
 import com.xiaoming.rabbit_course.service.UserService;
 import com.xiaoming.rabbit_course.utils.ConcealDataUtils;
 import com.xiaoming.rabbit_course.utils.JwtUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -91,6 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return proxy.signInUser(user);
         }
     }
+
     @Override
     public Result<String> signInUser(User user) {
 
@@ -107,22 +111,51 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
-     * 修改用户信息
+     * 管理员修改用户信息
      *
      * @param user 新用户信息
      * @return 修改结果
      */
     @Override
     public Result<String> serviceUpdateById(User user) {
-        if (user.getId() != null) {
-            if (StringUtils.isNotBlank(user.getPassword())) {
-                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            }
-            if (this.updateById(user)) {
-                return Result.ok("修改成功");
-            }
+        if (StringUtils.isNotBlank(user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        }
+        if (this.updateById(user)) {
+            return Result.ok("修改成功");
         }
         return Result.error("修改失败");
+    }
+//    getByUsername
+
+    /**
+     * 根据用户名获取用户信息
+     * @param username 用户名
+     * @return 用户信息
+     */
+    private User getByUsername(String username){
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username);
+        User user = this.getOne(lambdaQueryWrapper);
+        return user;
+    }
+    @Override
+    public Result<String> EditPassword(String username,UserPasswordDto userPasswordDto) {
+        User user = this.getByUsername(username);
+        if (user==null){
+            throw new CustomException("网络繁忙，请稍后再试");
+        }
+        if (!user.getId().equals(userPasswordDto.getId())){
+            throw new CustomException("只能修改自己的密码");
+        }
+//        User user = new User();
+        BeanUtils.copyProperties(userPasswordDto, user);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        boolean b = this.updateById(user);
+        if (b) {
+            return Result.ok("修改密码成功");
+        }
+        return Result.error("修改密码失败");
     }
 
     /**
@@ -162,8 +195,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户信息分页查询
      *
-     * @param page 页码
-     * @param size 每页显示数
+     * @param page     页码
+     * @param size     每页显示数
      * @param username 用户名查询条件
      * @return 分页数据
      */
@@ -179,8 +212,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 判断用户名是否存在
+     *
      * @param username 用户名
-     * @return 是否存在true,false
+     * @return 是否存在true, false
      */
     @Override
     public boolean usernameExists(String username) {

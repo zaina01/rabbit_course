@@ -32,8 +32,8 @@ public class User implements Serializable {
     private String username;
 
     @ApiModelProperty("用户密码")
-    @NotBlank(message = "密码不能为空")
-    @Length(min = 5,max = 20,message = "密码长度应该在6-20之间")
+    @NotBlank(message = "密码不能为空",groups = ValidationGroups.Insert.class)
+    @Length(min = 5,max = 20,message = "密码长度应该在6-20之间",groups = ValidationGroups.Insert.class)
     @TableField(select = false)
     private String password;
 

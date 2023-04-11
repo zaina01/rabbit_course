@@ -2,6 +2,7 @@ package com.xiaoming.rabbit_course.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xiaoming.rabbit_course.Dto.UserPasswordDto;
 import com.xiaoming.rabbit_course.common.Result;
 import com.xiaoming.rabbit_course.entity.User;
 
@@ -24,6 +25,6 @@ public interface UserService extends IService<User> {
     Result<Page> findAll(int page, int size,String username);
 
     boolean usernameExists(String username);
-
+    Result<String> EditPassword(String username,UserPasswordDto userPasswordDto);
     Result<String> signInUser(User user);
 }
