@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@Transactional(rollbackFor = Exception.class)
+
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Resource
@@ -40,8 +40,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户登录
      *
-     * @param user
-     * @return
+     * @param user 用户信息
+     * @return 登录token
      */
     @Override
     public Result<Map<String, String>> login(User user) {
@@ -67,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户退出登录
      *
-     * @return
+     * @return 结果
      */
     @Override
     public Result<String> logout() {
@@ -79,8 +79,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户注册
      *
-     * @param user
-     * @return
+     * @param user 用户信息
+     * @return 返回注册结果
      */
     @Override
     public Result<String> signIn(User user) {
@@ -109,8 +109,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 修改用户信息
      *
-     * @param user
-     * @return
+     * @param user 新用户信息
+     * @return 修改结果
      */
     @Override
     public Result<String> serviceUpdateById(User user) {
@@ -128,8 +128,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户查询个人信息
      *
-     * @param username
-     * @return
+     * @param username 用户名
+     * @return 用户信息
      */
     @Override
     public Result<User> findByusername(String username) {
@@ -146,8 +146,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 管理员根据id查用户信息
      *
-     * @param id
-     * @return
+     * @param id 用户id
+     * @return 用户信息
      */
     @Override
     public Result<User> findById(Long id) {
@@ -162,10 +162,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户信息分页查询
      *
-     * @param page
-     * @param size
-     * @param username
-     * @return
+     * @param page 页码
+     * @param size 每页显示数
+     * @param username 用户名查询条件
+     * @return 分页数据
      */
     @Override
     public Result<Page> findAll(int page, int size, String username) {
@@ -177,6 +177,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return Result.ok("查询成功", pageInfo);
     }
 
+    /**
+     * 判断用户名是否存在
+     * @param username 用户名
+     * @return 是否存在true,false
+     */
     @Override
     public boolean usernameExists(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();

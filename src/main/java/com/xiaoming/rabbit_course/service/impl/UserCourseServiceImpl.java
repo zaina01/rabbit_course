@@ -16,22 +16,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
-@Transactional(rollbackFor = Exception.class)
+
 @Service
 public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCourse> implements UserCourseService {
     @Resource
     private CourseService courseService;
     /**
-     * 选课
-     * @param userCourse
-     * @return
+     * 收藏课程
+     * @param userCourse 收藏信息
+     * @return 收藏结果
      */
     @Override
     public Result<String> insert(UserCourse userCourse) {
         Long credentials = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
         synchronized (credentials.toString().intern()) {  //.intern()返回字符串规范对象，不会直接new 新字符串对象，先去常量池找
-            UserCourseService currentProxy = (UserCourseService) AopContext.currentProxy();//获取当前对象的代理对象
-            return currentProxy.collect(credentials,userCourse);
+            return this.collect(credentials,userCourse);
         }
     }
     @Override
@@ -53,9 +52,9 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
     }
 
     /**
-     * 收藏课程
-     * @param courseId
-     * @return
+     * 取消收藏课程
+     * @param courseId 收藏课程的id
+     * @return 结果
      */
     @Override
     public Result<String> delete(Long courseId) {

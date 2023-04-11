@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
-@Transactional(rollbackFor = Exception.class)
+
 @Service
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
     @Resource
@@ -28,8 +28,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     /**
      * 根据分类id查询分类并查询所关联的课程
      *
-     * @param id
-     * @return
+     * @param id 分类id
+     * @return 分类信息
      */
     @Override
     public Result<Category> findById(Long id) {
@@ -55,8 +55,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     /**
      * 删除分类
      *
-     * @param id
-     * @return
+     * @param id 分类id
+     * @return 删除结果
      */
     @Override
     public Result<String> delete(Long id) {

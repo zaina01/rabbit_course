@@ -3,6 +3,7 @@ package com.xiaoming.rabbit_course.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoming.rabbit_course.common.Result;
+import com.xiaoming.rabbit_course.config.ValidationGroups;
 import com.xiaoming.rabbit_course.entity.Category;
 import com.xiaoming.rabbit_course.service.CategoryService;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +43,7 @@ public class CategoryController {
     @Secured("ROLE_ADMIN")
     @ApiOperation("更新分类 需要ROLE_ADMIN权限")
     @PutMapping(consumes = "application/json", produces = "application/json")
-    public Result<String> update(@ApiParam("要修改的分类信息") @Validated @RequestBody Category category) {
+    public Result<String> update(@ApiParam("要修改的分类信息") @Validated(ValidationGroups.Update.class) @RequestBody Category category) {
         return categoryService.updateCategory(category);
     }
 

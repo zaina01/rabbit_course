@@ -2,6 +2,7 @@ package com.xiaoming.rabbit_course.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.xiaoming.rabbit_course.config.ValidationGroups;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class Course implements Serializable {
     private static final long serialVersionUID = 1L;
     @ApiModelProperty("课程id")
+    @NotNull(message = "更新时课程id不能为空",groups = ValidationGroups.Update.class)
     private Long id;
 
     //    课程分类id

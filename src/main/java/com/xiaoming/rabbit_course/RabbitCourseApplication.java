@@ -7,9 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy(exposeProxy = true) //暴漏代理对象；
-@ServletComponentScan
 @SpringBootApplication
-@EnableTransactionManagement
 @EnableGlobalMethodSecurity(securedEnabled = true)//使用Spring Security 开启方法级动态授权
 public class RabbitCourseApplication {
 

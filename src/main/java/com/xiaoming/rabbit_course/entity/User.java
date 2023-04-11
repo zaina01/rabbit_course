@@ -3,12 +3,14 @@ package com.xiaoming.rabbit_course.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.xiaoming.rabbit_course.config.ValidationGroups;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 @Data
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @ApiModelProperty("用户id")
+    @NotNull(message = "更新信息用户id不能为空",groups = ValidationGroups.Update.class)
     private Long id;
 
     //    昵称

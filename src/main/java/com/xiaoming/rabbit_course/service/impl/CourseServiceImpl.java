@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
-@Transactional(rollbackFor = Exception.class)
+
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implements CourseService {
     @Resource
@@ -31,8 +31,8 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
     private CategoryService categoryService;
     /**
      * 查询课程信息，并查询课程下的课程章节
-     * @param id
-     * @return
+     * @param id 课程id
+     * @return 课程信息
      */
     @Override
     public Result<Course> findById(Long id) {
@@ -62,7 +62,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
      * @param page 页码
      * @param size 数量
      * @param name 查询条件
-     * @return
+     * @return 查询结果
      */
     @Override
     public Result<Page> findAll(int page, int size, String name) {
@@ -97,7 +97,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
     /**
      * 根据课程id 删除课程
      * @param id 课程id
-     * @return
+     * @return 删除结果
      */
     @Override
     public Result<String> delete(Long id) {

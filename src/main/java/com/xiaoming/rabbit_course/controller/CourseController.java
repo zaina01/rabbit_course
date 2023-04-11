@@ -3,6 +3,7 @@ package com.xiaoming.rabbit_course.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoming.rabbit_course.common.Result;
+import com.xiaoming.rabbit_course.config.ValidationGroups;
 import com.xiaoming.rabbit_course.entity.Course;
 import com.xiaoming.rabbit_course.service.CourseService;
 import io.swagger.annotations.ApiOperation;
@@ -40,7 +41,7 @@ public class CourseController {
     @ApiOperation("修改课程信息 需要ROLE_ADMIN权限")
     @Secured("ROLE_ADMIN")
     @PutMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> update(@ApiParam(value ="要修改的课程信息") @Validated @RequestBody Course course){
+    public Result<String> update(@ApiParam(value ="要修改的课程信息") @Validated(ValidationGroups.Update.class) @RequestBody Course course){
         return courseService.updateCourse(course);
     }
 

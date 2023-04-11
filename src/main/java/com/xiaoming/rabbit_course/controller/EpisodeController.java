@@ -1,6 +1,7 @@
 package com.xiaoming.rabbit_course.controller;
 
 import com.xiaoming.rabbit_course.common.Result;
+import com.xiaoming.rabbit_course.config.ValidationGroups;
 import com.xiaoming.rabbit_course.entity.Episode;
 import com.xiaoming.rabbit_course.service.EpisodeService;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +42,7 @@ public class EpisodeController {
     @Secured("ROLE_ADMIN")
     @ApiOperation("修改除课程章节 需要ROLE_ADMIN权限")
     @PutMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> update(@ApiParam(value = "要修改的数据") @RequestBody Episode episode){
+    public Result<String> update(@ApiParam(value = "要修改的数据")@Validated(ValidationGroups.Update.class) @RequestBody Episode episode){
         if (episodeService.updateById(episode)){
             return Result.ok("修改成功");
         }

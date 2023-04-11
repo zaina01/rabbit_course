@@ -4,6 +4,7 @@ package com.xiaoming.rabbit_course.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xiaoming.rabbit_course.common.Result;
+import com.xiaoming.rabbit_course.config.ValidationGroups;
 import com.xiaoming.rabbit_course.entity.User;
 import com.xiaoming.rabbit_course.service.UserService;
 
@@ -76,7 +77,7 @@ public class UserController {
     }
     @ApiOperation("根据id更新用户信息")
     @PutMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> updateById(@ApiParam(value ="用户信息") @Validated @RequestBody User user) {
+    public Result<String> updateById(@ApiParam(value ="用户信息") @Validated(ValidationGroups.Update.class) @RequestBody User user) {
         log.info("user:{}", user);
         return userService.serviceUpdateById(user);
     }
