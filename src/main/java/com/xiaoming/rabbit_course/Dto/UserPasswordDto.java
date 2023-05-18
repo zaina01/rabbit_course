@@ -23,6 +23,6 @@ public class UserPasswordDto {
     private Long id;
     @ApiModelProperty("用户新密码")
     @NotBlank(message = "新密码不能为空",groups = ValidationGroups.Update.class)
-    @Length(min = 5,max = 20,message = "新密码长度应该在6-20之间",groups = ValidationGroups.Update.class)
+    @Length(min = 6,max = 20,message = "新密码长度应该在6-20之间",groups = ValidationGroups.Update.class)
     private String password;
 }
