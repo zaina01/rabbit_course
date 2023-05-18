@@ -100,7 +100,7 @@ public class UserController {
     }
     @ApiOperation("根据id修改密码")
     @PutMapping("/password")
-    public Result<String> editPassword(@RequestBody UserPasswordDto userPasswordDto){
+    public Result<String> editPassword (@Validated(ValidationGroups.Update.class) @RequestBody UserPasswordDto userPasswordDto){
         String username=SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         return userService.EditPassword(username,userPasswordDto);
     }

@@ -204,7 +204,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Result<Page> findAll(int page, int size, String username) {
         Page<User> pageInfo = new Page<>(page, size);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.ne(User::getRole, "ROLE_ADMIN");
+        queryWrapper.ne(User::getRole, "ROLE_ADMIN").or().isNull(User::getRole);
         queryWrapper.like(StringUtils.isNotBlank(username), User::getUsername, username);
         this.page(pageInfo, queryWrapper);
         return Result.ok("查询成功", pageInfo);
