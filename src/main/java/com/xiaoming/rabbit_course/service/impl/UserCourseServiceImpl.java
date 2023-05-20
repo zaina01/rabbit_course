@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCourse> implements UserCourseService {
@@ -100,7 +101,8 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
         lambdaQueryWrapper.eq(UserCourse::getUserId,userId);
         lambdaQueryWrapper.select(UserCourse::getCourseId);
         //查询收藏的课程集合
-        List<UserCourse> courseIds = this.list(lambdaQueryWrapper);
+        List<UserCourse> list = this.list(lambdaQueryWrapper);
+        List<Long> courseIds = list.stream().map(UserCourse::getCourseId).collect(Collectors.toList());
         LambdaQueryWrapper<Course> courseLambdaQueryWrapper=new LambdaQueryWrapper<>();
         courseLambdaQueryWrapper.in(Course::getId, courseIds);
         List<Course> courseList = courseService.list(courseLambdaQueryWrapper);
