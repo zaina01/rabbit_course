@@ -18,18 +18,26 @@ import java.util.List;
 public class UserCourseController {
     @Resource
     private UserCourseService userCourseService;
-    @ApiOperation("收藏")
-    @PostMapping(consumes = "application/json",produces = "application/json")
-    public Result<String> save(@RequestBody @Validated UserCourse userCourse){
-        return userCourseService.insert(userCourse);
-    }
+//    @ApiOperation("收藏")
+//    @PostMapping(consumes = "application/json",produces = "application/json")
+//    public Result<String> save(@RequestBody @Validated UserCourse userCourse){
+//        return userCourseService.insert(userCourse);
+//    }
 
-
-    @ApiOperation("取消收藏")
-    @DeleteMapping("/{courseId}")
-    public Result<String> delete(@ApiParam(value = "课程Id",example ="0") @PathVariable @NotNull(message = "id不能为空") Long courseId){
-        return userCourseService.delete(courseId);
+    @ApiOperation("收藏或取消收藏")
+    @GetMapping("/{courseId}/{flag}")
+    public Result<String> collect(@PathVariable Long courseId,@PathVariable boolean flag){
+        if (flag){
+            return userCourseService.insert(courseId);}
+        else {
+            return userCourseService.delete(courseId);
+        }
     }
+//    @ApiOperation("取消收藏")
+//    @DeleteMapping("/{courseId}")
+//    public Result<String> delete(@ApiParam(value = "课程Id",example ="0") @PathVariable @NotNull(message = "id不能为空") Long courseId){
+//        return userCourseService.delete(courseId);
+//    }
 
     @ApiOperation("查询课程是否已收藏")
     @GetMapping("/{courseId}")

@@ -26,19 +26,19 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
      * @param userCourse 收藏信息
      * @return 收藏结果
      */
+//    @Override
+//    public Result<String> insert(UserCourse userCourse) {
+//        Long credentials = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+//        synchronized (credentials.toString().intern()) {  //.intern()返回字符串规范对象，不会直接new 新字符串对象，先去常量池找
+//            return this.collect(credentials,userCourse);
+//        }
+//    }
     @Override
-    public Result<String> insert(UserCourse userCourse) {
-        Long credentials = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        synchronized (credentials.toString().intern()) {  //.intern()返回字符串规范对象，不会直接new 新字符串对象，先去常量池找
-            return this.collect(credentials,userCourse);
-        }
-    }
-    @Override
-    public Result<String> collect (Long credentials, UserCourse userCourse){
+    public Result<String> collect (UserCourse userCourse){
         //查询用户是否已收藏过该课程
         LambdaQueryWrapper<UserCourse> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(UserCourse::getCourseId, userCourse.getCourseId());
-        lambdaQueryWrapper.eq(UserCourse::getUserId, credentials);
+        lambdaQueryWrapper.eq(UserCourse::getUserId, userCourse.getUserId());
         UserCourse one = this.getOne(lambdaQueryWrapper);
         //用户已收藏过该课程
         if (one != null) {
@@ -62,6 +62,17 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
             Result.ok("已收藏");
         }
         return Result.error("未收藏");
+    }
+
+    @Override
+    public Result<String> insert(Long courseId) {
+        Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        UserCourse userCourse = new UserCourse();
+        userCourse.setCourseId(courseId);
+        userCourse.setUserId(userId);
+        synchronized (userId.toString().intern()) {  //.intern()返回字符串规范对象，不会直接new 新字符串对象，先去常量池找
+            return this.collect(userCourse);
+        }
     }
 
     /**
