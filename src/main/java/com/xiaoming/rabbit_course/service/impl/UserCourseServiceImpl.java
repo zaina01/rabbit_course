@@ -102,6 +102,9 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
         lambdaQueryWrapper.select(UserCourse::getCourseId);
         //查询收藏的课程集合
         List<UserCourse> list = this.list(lambdaQueryWrapper);
+        if(!(list.size() >0)){
+            return Result.error("没有收藏的课程");
+        }
         List<Long> courseIds = list.stream().map(UserCourse::getCourseId).collect(Collectors.toList());
         LambdaQueryWrapper<Course> courseLambdaQueryWrapper=new LambdaQueryWrapper<>();
         courseLambdaQueryWrapper.in(Course::getId, courseIds);
