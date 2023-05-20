@@ -51,6 +51,19 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
         return Result.error("收藏失败");
     }
 
+    @Override
+    public Result<String> findByUserIdAndCourseId(Long courseId) {
+        Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+
+        LambdaQueryWrapper<UserCourse> lambdaQueryWrapper=  new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(UserCourse::getCourseId,courseId).eq(UserCourse::getUserId,userId);
+        UserCourse userCourse = this.getOne(lambdaQueryWrapper);
+        if (userCourse!=null){
+            Result.ok("已收藏");
+        }
+        return Result.error("未收藏");
+    }
+
     /**
      * 取消收藏课程
      * @param courseId 收藏课程的id

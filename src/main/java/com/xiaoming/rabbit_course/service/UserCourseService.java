@@ -13,5 +13,8 @@ public interface UserCourseService extends IService<UserCourse> {
     Result<String> delete(Long courseId);
 
     Result<List<Course>> findByUserId();
-    public Result<String> collect (Long credentials, UserCourse userCourse);
+
+    Result<String> collect (Long credentials, UserCourse userCourse);
+
+    Result<String> findByUserIdAndCourseId(Long courseId);
 }

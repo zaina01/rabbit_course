@@ -31,7 +31,13 @@ public class UserCourseController {
         return userCourseService.delete(courseId);
     }
 
-    @ApiOperation("查看收藏")
+    @ApiOperation("查询课程是否已收藏")
+    @GetMapping("/{courseId}")
+    public Result<String> getState(@ApiParam(value = "课程Id",example ="0") @PathVariable @NotNull(message = "id不能为空") Long courseId){
+        return userCourseService.findByUserIdAndCourseId(courseId);
+    }
+
+    @ApiOperation("查看全部收藏")
     @GetMapping
     public Result<List<Course>> findByUserId(){
         return userCourseService.findByUserId();
