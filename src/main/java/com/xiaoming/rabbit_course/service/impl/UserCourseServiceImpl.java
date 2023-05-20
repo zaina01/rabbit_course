@@ -59,7 +59,7 @@ public class UserCourseServiceImpl extends ServiceImpl<UserCourseMapper, UserCou
         lambdaQueryWrapper.eq(UserCourse::getCourseId,courseId).eq(UserCourse::getUserId,userId);
         UserCourse userCourse = this.getOne(lambdaQueryWrapper);
         if (userCourse!=null){
-            Result.ok("已收藏");
+            return Result.ok("已收藏");
         }
         return Result.error("未收藏");
     }
