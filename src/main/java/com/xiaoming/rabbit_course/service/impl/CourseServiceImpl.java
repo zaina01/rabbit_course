@@ -65,12 +65,15 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course>implemen
      * @return 查询结果
      */
     @Override
-    public Result<Page> findAll(int page, int size, String name) {
+    public Result<Page> findAll(int page, int size, String name,boolean isAdmin) {
         Page<Course> coursePage = new Page<>(page, size);
         Page<CourseDto> courseDtoPage=new Page<>();
         //模糊查询课程条件
         LambdaQueryWrapper<Course> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(StringUtils.isNotBlank(name),Course::getName,name);
+        if (!isAdmin){
+            lambdaQueryWrapper.eq(Course::getStatus,0);
+        }
         this.page(coursePage, lambdaQueryWrapper);
         //bena拷贝
         BeanUtils.copyProperties(coursePage,courseDtoPage,"records");

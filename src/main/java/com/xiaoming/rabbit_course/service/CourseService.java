@@ -8,7 +8,7 @@ import com.xiaoming.rabbit_course.entity.Course;
 public interface CourseService extends IService<Course> {
     Result<Course> findById(Long id);
 
-    Result<Page> findAll(int page, int size, String name);
+    Result<Page> findAll(int page, int size, String name,boolean isAdmin);
 
     Result<String> delete(Long id);
 

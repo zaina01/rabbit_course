@@ -52,9 +52,16 @@ public class CourseController {
         return courseService.findById(id);
     }
     @ApiOperation("/查询全部课程")
+    @Secured("ROLE_ADMIN")
     @GetMapping("/{page}/{size}")
     public Result<Page> page(@ApiParam(value ="页码",example = "0") @NotNull(message = "page不能为空") @PathVariable Integer page, @ApiParam(value = "每页显示数",example = "0") @NotNull(message = "size不能为空") @PathVariable Integer size, @ApiParam("查询条件课程名，可传可不传") String name){
-        return courseService.findAll(page,size,name);
+        return courseService.findAll(page,size,name,true);
+    }
+
+    @ApiOperation("/查询全部课程")
+    @GetMapping("/list/{page}/{size}")
+    public Result<Page> List(@ApiParam(value ="页码",example = "0") @NotNull(message = "page不能为空") @PathVariable Integer page, @ApiParam(value = "每页显示数",example = "0") @NotNull(message = "size不能为空") @PathVariable Integer size, @ApiParam("查询条件课程名，可传可不传") String name){
+        return courseService.findAll(page,size,name,false);
     }
 
 }
